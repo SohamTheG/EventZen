@@ -20,6 +20,11 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll() // Allow register/login
                         .requestMatchers("/api/attendees/**").permitAll() // ALLOW ATTENDEES
                         .requestMatchers("/auth/all").permitAll() // ALLOW to fetch all users (not advised)
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
+                        .permitAll()
                         .requestMatchers("/user/**").permitAll() // 3. Permit DELETE/PUT on user paths
                         .anyRequest().authenticated());
         return http.build();
