@@ -12,7 +12,7 @@ require('dotenv').config();
 
 
 const app = express();
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
 app.use('/api/venues', venueRoutes);
 app.use('/api/vendors', vendorRoutes);
@@ -42,6 +42,11 @@ const swaggerOptions = {
 
 // --- 2. INITIALIZE SWAGGER ---
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+app.get('/v3/api-docs', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+});
 
 // --- 3. SERVE SWAGGER UI ---
 // This creates the actual webpage at /api-docs

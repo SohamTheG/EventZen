@@ -17,7 +17,7 @@ import com.project.events_bookings_api.services.EventService;
 
 @RestController
 @RequestMapping("/api/events")
-@CrossOrigin(origins = "http://localhost:3000")
+// @CrossOrigin(origins = "http://localhost:3000")
 public class EventController {
     @Autowired
     private EventService eventService;

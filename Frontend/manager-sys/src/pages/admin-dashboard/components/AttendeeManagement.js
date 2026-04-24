@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Typography, Paper, Chip, Avatar } from '@mui/material';
 
@@ -8,18 +9,18 @@ export default function AttendeeManagement() {
 
     const loadData = async () => {
         try {
-            // 1. Fetch Bookings from Port 9002 to get Event Names
-            const bRes = await fetch('http://localhost:9002/api/bookings');
-            const bookings = await bRes.json();
+            // 1. Fetch Bookings to get Event Names
+            const bRes = await apiClient.get('/api/bookings');
+            const bookings = bRes.data;
             const bMap = {};
             bookings.forEach(b => {
                 bMap[b.id] = b.event?.name || `Event #${b.id}`;
             });
             setBookingMap(bMap);
 
-            // 2. Fetch All Attendees from Port 9000
-            const aRes = await fetch('http://localhost:9000/api/attendees/all');
-            const aData = await aRes.json();
+            // 2. Fetch All Attendees
+            const aRes = await apiClient.get('/api/attendees/all');
+            const aData = aRes.data;
             setAttendees(aData);
         } catch (err) {
             console.error("Error loading attendee data:", err);

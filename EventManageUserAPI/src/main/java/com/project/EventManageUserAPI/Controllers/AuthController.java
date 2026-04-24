@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.EventManageUserAPI.Repositories.UserRepo;
 import com.project.EventManageUserAPI.models.User;
 
-@CrossOrigin(origins = "http://localhost:3000") // Allow React to talk to Spring
+// @CrossOrigin(origins = "http://localhost:3000") // Allow React to talk to Spring
 @RestController
 @RequestMapping("/auth")
 public class AuthController {

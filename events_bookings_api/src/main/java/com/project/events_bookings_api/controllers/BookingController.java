@@ -20,7 +20,7 @@ import com.project.events_bookings_api.services.BookingService;
 
 @RestController
 @RequestMapping("/api/bookings")
-@CrossOrigin(origins = "http://localhost:3000")
+// @CrossOrigin(origins = "http://localhost:3000")
 public class BookingController {
     @Autowired
     private BookingService bookingService;

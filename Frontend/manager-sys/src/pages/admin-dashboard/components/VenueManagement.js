@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import { DataGrid } from '@mui/x-data-grid';
 import {
     Button, Stack, Typography, TextField, Dialog, DialogTitle,
@@ -20,15 +21,23 @@ export default function VenueManagement() {
     });
 
     const fetchVenues = async () => {
-        const res = await fetch('http://localhost:9001/api/venues');
-        const data = await res.json();
-        setVenues(data);
+        try {
+            const res = await apiClient.get('/api/venues');
+            const data = res.data;
+            setVenues(data);
+        } catch (error) {
+            console.error('Error fetching venues:', error);
+        }
     };
 
     const fetchVendors = async () => {
-        const res = await fetch('http://localhost:9001/api/vendors');
-        const data = await res.json();
-        setAllVendors(data);
+        try {
+            const res = await apiClient.get('/api/vendors');
+            const data = res.data;
+            setAllVendors(data);
+        } catch (error) {
+            console.error('Error fetching vendors:', error);
+        }
     };
 
     useEffect(() => {
@@ -60,38 +69,44 @@ export default function VenueManagement() {
 
     const handleSave = async () => {
         const url = isEdit
-            ? `http://localhost:9001/api/venues/${currentId}`
-            : 'http://localhost:9001/api/venues';
+            ? `/api/venues/${currentId}`
+            : '/api/venues';
 
-        const method = isEdit ? 'PUT' : 'POST';
+        const method = isEdit ? 'put' : 'post';
 
-        // 1. Save the Venue
-        const response = await fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name: formData.name,
-                location: formData.location,
-                capacity: formData.capacity,
-                price_per_day: formData.price_per_day
-            }),
-        });
+        try {
+            // 1. Save the Venue
+            const response = isEdit
+                ? await apiClient.put(url, {
+                    name: formData.name,
+                    location: formData.location,
+                    capacity: formData.capacity,
+                    price_per_day: formData.price_per_day
+                })
+                : await apiClient.post(url, {
+                    name: formData.name,
+                    location: formData.location,
+                    capacity: formData.capacity,
+                    price_per_day: formData.price_per_day
+                });
 
-        const savedVenue = await response.json();
-        const venueId = isEdit ? currentId : savedVenue.id;
+            const savedVenue = response.data;
+            const venueId = isEdit ? currentId : savedVenue.id;
 
-        // 2. Loop through selected vendors and link them to this Venue
-        // Note: For a real app, you might want a single "bulk assign" endpoint
-        if (formData.selectedVendorIds.length > 0) {
-            await Promise.all(
-                formData.selectedVendorIds.map(vendorId =>
-                    fetch(`http://localhost:9001/api/venues/${venueId}/vendors/${vendorId}`, { method: 'POST' })
-                )
-            );
+            // 2. Loop through selected vendors and link them to this Venue
+            if (formData.selectedVendorIds.length > 0) {
+                await Promise.all(
+                    formData.selectedVendorIds.map(vendorId =>
+                        apiClient.post(`/api/venues/${venueId}/vendors/${vendorId}`)
+                    )
+                );
+            }
+
+            setOpen(false);
+            fetchVenues();
+        } catch (error) {
+            console.error('Error saving venue:', error);
         }
-
-        setOpen(false);
-        fetchVenues();
     };
 
     const columns = [
@@ -135,8 +150,12 @@ export default function VenueManagement() {
                     </Button>
                     <Button color="error" variant="outlined" size="small" onClick={async () => {
                         if (window.confirm("Delete this venue?")) {
-                            await fetch(`http://localhost:9001/api/venues/${params.id}`, { method: 'DELETE' });
-                            fetchVenues();
+                            try {
+                                await apiClient.delete(`/api/venues/${params.id}`);
+                                fetchVenues();
+                            } catch (error) {
+                                console.error('Error deleting venue:', error);
+                            }
                         }
                     }}>
                         Delete

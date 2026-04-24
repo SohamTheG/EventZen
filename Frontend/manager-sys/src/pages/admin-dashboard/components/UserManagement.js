@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Typography, Paper, Chip, Avatar, Stack } from '@mui/material';
 
@@ -7,8 +8,8 @@ export default function UserManagement() {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch('http://localhost:9000/auth/all'); // Adjust path to your user list endpoint
-            const data = await response.json();
+            const response = await apiClient.get('/auth/all');
+            const data = response.data;
             setUsers(data);
         } catch (err) {
             console.error("Error fetching users:", err);

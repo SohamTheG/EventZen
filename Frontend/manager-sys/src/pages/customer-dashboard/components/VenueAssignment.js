@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import { Box, Button, MenuItem, TextField, Typography, Stack, Paper, Alert } from '@mui/material';
 
 export default function VenueAssignment() {
@@ -11,10 +12,14 @@ export default function VenueAssignment() {
     useEffect(() => {
         // Load both lists so we can populate the dropdowns
         const loadData = async () => {
-            const venueRes = await fetch('http://localhost:9001/api/venues');
-            const vendorRes = await fetch('http://localhost:9001/api/vendors');
-            setVenues(await venueRes.json());
-            setVendors(await vendorRes.json());
+            try {
+                const venueRes = await apiClient.get('/api/venues');
+                const vendorRes = await apiClient.get('/api/vendors');
+                setVenues(venueRes.data);
+                setVendors(vendorRes.data);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
         };
         loadData();
     }, []);
@@ -23,19 +28,15 @@ export default function VenueAssignment() {
         if (!selectedVenue || !selectedVendor) return;
 
         try {
-            const response = await fetch(
-                `http://localhost:9001/api/venues/${selectedVenue}/vendors/${selectedVendor}`,
-                { method: 'POST' }
+            const response = await apiClient.post(
+                `/api/venues/${selectedVenue}/vendors/${selectedVendor}`
             );
 
-            if (response.ok) {
-                setMessage({ type: 'success', text: 'Vendor linked to Venue successfully!' });
-                setSelectedVendor(''); // Clear selection
-            } else {
-                setMessage({ type: 'error', text: 'Failed to link. They might already be linked.' });
-            }
+            setMessage({ type: 'success', text: 'Vendor linked to Venue successfully!' });
+            setSelectedVendor(''); // Clear selection
         } catch (err) {
-            setMessage({ type: 'error', text: 'Server error. Check if Node.js is running.' });
+            const errorMsg = err.response?.data?.message || 'Failed to link. They might already be linked.';
+            setMessage({ type: 'error', text: errorMsg });
         }
     };
 

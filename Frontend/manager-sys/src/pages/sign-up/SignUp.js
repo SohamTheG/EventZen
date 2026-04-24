@@ -18,6 +18,7 @@ import ColorModeSelect from 'shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './components/CustomIcons';
 import { FormGroup } from '@mui/material';
 import { FormHelperText } from '@mui/material';
+import apiClient from '../../api/axiosConfig';
 import { Radio } from '@mui/material';
 import { RadioGroup } from '@mui/material';
 
@@ -141,21 +142,12 @@ export default function SignUp(props) {
     console.log("Sending Data:", signUpData); // Good for debugging
 
     try {
-      const response = await fetch('http://localhost:9000/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(signUpData),
-      });
-
-      if (response.ok) {
-        alert('Registration successful!');
-        window.location.href = '/login';
-      } else {
-        const errorData = await response.text();
-        alert(`Registration failed: ${errorData}`);
-      }
+      const response = await apiClient.post('/auth/register', signUpData);
+      alert('Registration successful!');
+      window.location.href = '/login';
     } catch (error) {
-      alert('Server is down.');
+      const errorMsg = error.response?.data?.message || 'Registration failed';
+      alert(`Registration failed: ${errorMsg}`);
     }
   };
 

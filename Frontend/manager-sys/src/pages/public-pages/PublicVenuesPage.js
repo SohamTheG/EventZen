@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../api/axiosConfig';
 import {
     Box, Container, Typography, Grid, Card, CardContent,
     CardMedia, Stack, Button, Rating, alpha, CssBaseline
@@ -13,9 +14,8 @@ export default function PublicVenuesPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch('http://localhost:9001/api/venues')
-            .then(res => res.json())
-            .then(setVenues)
+        apiClient.get('/api/venues')
+            .then(res => setVenues(res.data))
             .catch(err => console.error("Error loading venues:", err));
     }, []);
 
