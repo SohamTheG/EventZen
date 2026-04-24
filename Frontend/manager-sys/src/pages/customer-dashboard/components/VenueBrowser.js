@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import {
     Grid,
     Card,
@@ -49,18 +50,12 @@ export default function VenueBrowser() {
         };
 
         try {
-            const response = await fetch('http://localhost:9002/api/bookings', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-
-            if (response.ok) {
-                alert("Booking request sent! Wait for Admin approval.");
-                setBookingOpen(false);
-            }
+            const response = await apiClient.post('/api/bookings', payload);
+            alert("Booking request sent! Wait for Admin approval.");
+            setBookingOpen(false);
         } catch (error) {
             console.error("Booking failed:", error);
+            alert('Booking failed: ' + (error.response?.data?.message || error.message));
         }
     };
     const getVenueImage = (v) => {
@@ -70,9 +65,8 @@ export default function VenueBrowser() {
     };
 
     useEffect(() => {
-        fetch('http://localhost:9001/api/venues')
-            .then(res => res.json())
-            .then(setVenues)
+        apiClient.get('/api/venues')
+            .then(res => setVenues(res.data))
             .catch(err => console.error("Error loading venues:", err));
     }, []);
 

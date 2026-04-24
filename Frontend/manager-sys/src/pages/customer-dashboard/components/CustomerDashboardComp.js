@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import {
     Grid, Paper, Typography, Box, Button, Stack,
     Avatar, Divider, Card, CardContent
@@ -18,20 +19,20 @@ export default function CustomerDashboard({ setSelectedView }) {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                // 1. Ports 9001 (Venues/Vendors)
-                const vRes = await fetch('http://localhost:9001/api/venues');
-                const venRes = await fetch('http://localhost:9001/api/vendors');
-                const venues = await vRes.json();
-                const vendors = await venRes.json();
+                // 1. Fetch Venues/Vendors
+                const vRes = await apiClient.get('/api/venues');
+                const venRes = await apiClient.get('/api/vendors');
+                const venues = vRes.data;
+                const vendors = venRes.data;
 
-                // 2. Port 9002 (Bookings/Events)
-                const bRes = await fetch('http://localhost:9002/api/bookings');
-                const events = await bRes.json();
+                // 2. Fetch Bookings/Events
+                const bRes = await apiClient.get('/api/bookings');
+                const events = bRes.data;
                 const approvedEvents = events.filter(e => e.status === 'APPROVED');
 
-                // 3. Port 9000 (Attendees)
-                const aRes = await fetch('http://localhost:9000/api/attendees/all');
-                const attendees = await aRes.json();
+                // 3. Fetch Attendees
+                const aRes = await apiClient.get('/api/attendees/all');
+                const attendees = aRes.data;
                 const myCount = attendees.filter(a => a.user?.id === user?.id).length;
 
                 setStats({

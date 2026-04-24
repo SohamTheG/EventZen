@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../api/axiosConfig';
 import {
     Box, Container, Typography, Grid, Card, CardContent,
     CardMedia, Chip, Stack, Button, alpha, CssBaseline
@@ -11,10 +12,9 @@ export default function PublicEventsPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch('http://localhost:9002/api/bookings')
-            .then(res => res.json())
-            .then(data => {
-                const approved = data.filter(e => e.status === 'APPROVED');
+        apiClient.get('/api/bookings')
+            .then(res => {
+                const approved = res.data.filter(e => e.status === 'APPROVED');
                 setEvents(approved);
             })
             .catch(err => console.error("Error loading events:", err));

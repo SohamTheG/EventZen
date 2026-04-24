@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import {
     Box, Typography, TextField, Button, Paper, Stack,
     Avatar, Snackbar, Alert, alpha
@@ -54,18 +55,12 @@ export default function ProfileManagement() {
             // 3. DEBUG: Check this in your BROWSER console (F12)
             console.log("FINAL JSON BEING SENT:", JSON.stringify(payload));
 
-            const response = await fetch(`http://localhost:9000/user/${user.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
+            const response = await apiClient.put(`/user/${user.id}`, payload);
 
-            if (response.ok) {
-                const updatedUser = { ...user, name: currentName, email: currentEmail };
-                localStorage.setItem('user', JSON.stringify(updatedUser));
-                setMsg({ open: true, text: 'Updated! Syncing...', severity: 'success' });
-                setTimeout(() => window.location.reload(), 1500);
-            }
+            const updatedUser = { ...user, name: currentName, email: currentEmail };
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            setMsg({ open: true, text: 'Updated! Syncing...', severity: 'success' });
+            setTimeout(() => window.location.reload(), 1500);
         } catch (err) {
             setMsg({ open: true, text: 'Fetch Error', severity: 'error' });
         }

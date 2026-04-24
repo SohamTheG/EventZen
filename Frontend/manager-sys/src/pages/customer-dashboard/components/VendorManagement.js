@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import { DataGrid } from '@mui/x-data-grid';
 import { Button, Stack, Typography, TextField, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Box } from '@mui/material';
 
@@ -11,11 +12,11 @@ export default function VendorManagement() {
     const [currentId, setCurrentId] = useState(null);
     const [formData, setFormData] = useState({ name: '', type: '' });
 
-    // 1. FETCH: Get all vendors from Node.js
+    // 1. FETCH: Get all vendors
     const fetchVendors = async () => {
         try {
-            const res = await fetch('http://localhost:9001/api/vendors');
-            const data = await res.json();
+            const res = await apiClient.get('/api/vendors');
+            const data = res.data;
             setVendors(data);
         } catch (err) {
             console.error("Failed to fetch vendors:", err);
@@ -44,17 +45,15 @@ export default function VendorManagement() {
         if (!formData.name || !formData.type) return alert("Please fill all fields");
 
         const url = isEdit
-            ? `http://localhost:9001/api/vendors/${currentId}`
-            : 'http://localhost:9001/api/vendors';
-
-        const method = isEdit ? 'PUT' : 'POST';
+            ? `/api/vendors/${currentId}`
+            : '/api/vendors';
 
         try {
-            await fetch(url, {
-                method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
+            if (isEdit) {
+                await apiClient.put(url, formData);
+            } else {
+                await apiClient.post(url, formData);
+            }
             setOpen(false);
             fetchVendors();
         } catch (err) {
@@ -65,8 +64,12 @@ export default function VendorManagement() {
     // 3. DELETE: Remove a vendor
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this vendor?")) {
-            await fetch(`http://localhost:9001/api/vendors/${id}`, { method: 'DELETE' });
-            fetchVendors();
+            try {
+                await apiClient.delete(`/api/vendors/${id}`);
+                fetchVendors();
+            } catch (error) {
+                console.error('Error deleting vendor:', error);
+            }
         }
     };
 

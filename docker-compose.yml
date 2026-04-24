@@ -1,0 +1,97 @@
+services:
+  # --- 1. THE SINGLE MYSQL DATABASE ---
+  mysql-db:
+    image: mysql:8.0
+    container_name: eventzen-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin # Updated to match your Node config
+    ports:
+      - "3307:3306"
+    volumes:
+      # This runs the script to create both databases on startup
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  # --- 2. SPRING BOOT 1 (User/Auth) ---
+  user-auth-api:
+    build: ./EventManageUserAPI
+    container_name: user-auth-service
+    restart: on-failure
+    ports:
+      - "9000:9000"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    environment:
+      # Pointing strictly to userattendeesdb
+      - SERVER_PORT=9000
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/userattendeesdb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=admin
+
+  # --- 3. SPRING BOOT 2 (Events/Bookings) ---
+  events-booking-api:
+    build: ./events_bookings_api
+    container_name: events-booking-service
+    restart: on-failure
+    ports:
+      - "9002:9002"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    environment:
+      # Pointing strictly to events_booking_db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/events_booking_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SERVER_PORT=9002
+  # --- 4. NODE.JS API ---
+  venue-vendor-api:
+    build: ./VenueAndVendorAPI
+    container_name: venue-vendor-service
+    restart: on-failure
+    ports:
+      - "9001:9001" # Updated port
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    environment:
+      # These override your local .env file automatically
+      - PORT=9001
+      - DB_NAME=venue_service_db
+      - DB_USER=root
+      - DB_PASS=admin
+      - DB_HOST=mysql-db # This is the magic link instead of 127.0.0.1
+  # --- 5. FRONTEND ---
+  frontend-app:
+    build: ./Frontend/manager-sys
+    container_name: eventzen-frontend
+    ports:
+      - "3000:3000" # Changed back to 3000:3000 to match React!
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    environment:
+      # These variables ensure React hot-reloading works perfectly through Windows Docker
+      - WATCHPACK_POLLING=true
+      - WDS_SOCKET_PORT=0
+    volumes:
+      # This mirrors your live Windows folder into the container
+      - ./Frontend/manager-sys:/app
+      # This protects the container's node_modules from being overwritten
+      - /app/node_modules
+  # --- 6. API GATEWAY ---
+  # --- 6. API GATEWAY ---
+  api-gateway:
+    build: ./gateway # Path to your new gateway folder
+    container_name: eventzen-gateway
+    ports:
+      - "8080:8080" # The ONLY backend port exposed to the outside world
+    depends_on:
+      - user-auth-api # <-- CHANGED from user-auth-service
+      - venue-vendor-api # <-- CHANGED from venue-vendor-service
+      - events-booking-api # <-- CHANGED from events-booking-service

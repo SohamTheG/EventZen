@@ -59,7 +59,7 @@ export default function Footer() {
               Join the newsletter
             </Typography> */}
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-              Subscribe for weekly updates. No spams ever!
+              Subscribe for weekly updates.
             </Typography>
             <InputLabel htmlFor="email-newsletter">Email</InputLabel>
             <Stack direction="row" spacing={1} useFlexGap>

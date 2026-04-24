@@ -18,6 +18,7 @@ import AppTheme from 'shared-theme/AppTheme';
 import ColorModeSelect from 'shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './components/CustomIcons';
 import { useNavigate } from 'react-router-dom'; // 1. Import the hook
+import apiClient from '../../api/axiosConfig';
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -82,27 +83,20 @@ export default function SignIn(props) {
     const password = data.get('password');
 
     try {
-      const response = await fetch('http://localhost:9000/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await apiClient.post('/auth/login', { email, password });
+      alert("Login Successful!");
 
-      if (response.ok) {
-        alert("Login Successful!");
+      const user = response.data;
+      localStorage.setItem('user', JSON.stringify(user));
 
-        const user = await response.json();
-        localStorage.setItem('user', JSON.stringify(user));
-
-        if (user.role.toUpperCase() === 'ADMIN') {
-          navigate("/admin-dashboard"); // Redirect to home
-        } else {
-          navigate("/customer-dashboard"); // Redirect to home
-        }
+      if (user.role.toUpperCase() === 'ADMIN') {
+        navigate("/admin-dashboard"); // Redirect to admin dashboard
       } else {
-        alert("Invalid credentials");
+        navigate("/customer-dashboard"); // Redirect to customer dashboard
       }
     } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Invalid credentials';
+      alert(errorMsg);
       console.error("Error logging in:", error);
     }
   };

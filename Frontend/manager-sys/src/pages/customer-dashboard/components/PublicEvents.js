@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import {
     Grid, Card, CardContent, Typography, Box, Chip,
     Stack, Divider, CardMedia, CardActions, Button, Snackbar, Alert
@@ -18,23 +19,23 @@ export default function PublicEvents() {
         const loggedInUser = JSON.parse(localStorage.getItem('user'));
 
         try {
-            // 1. Fetch Venue Names from Node.js (Port 9001)
-            const vRes = await fetch('http://localhost:9001/api/venues');
-            const venues = await vRes.json();
+            // 1. Fetch Venue Names
+            const vRes = await apiClient.get('/api/venues');
+            const venues = vRes.data;
             const vMap = {};
             venues.forEach(v => vMap[v.id] = v);
             setVenueMap(vMap);
 
-            // 2. Fetch Approved Bookings from Spring Boot (Port 9002)
-            const bRes = await fetch('http://localhost:9002/api/bookings');
-            const allBookings = await bRes.json();
+            // 2. Fetch Approved Bookings
+            const bRes = await apiClient.get('/api/bookings');
+            const allBookings = bRes.data;
             const publicOnly = allBookings.filter(b => b.status === 'APPROVED');
             setEvents(publicOnly);
 
-            // 3. Fetch current user's registrations from User API (Port 9000)
+            // 3. Fetch current user's registrations
             if (loggedInUser) {
-                const aRes = await fetch(`http://localhost:9000/api/attendees/all`);
-                const allAttendees = await aRes.json();
+                const aRes = await apiClient.get('/api/attendees/all');
+                const allAttendees = aRes.data;
                 // Filter to find eventIds where this specific user is registered
                 const myEvents = allAttendees
                     .filter(a => a.user?.id === loggedInUser.id)
@@ -64,21 +65,14 @@ export default function PublicEvents() {
         };
 
         try {
-            const response = await fetch(`http://localhost:9000/api/attendees/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
+            const response = await apiClient.post('/api/attendees/register', payload);
 
-            if (response.ok) {
-                setSnackbar({ open: true, message: "Registration successful!", severity: 'success' });
-                // Update local state so the button changes immediately without a refresh
-                setUserRegistrations([...userRegistrations, eventId]);
-            } else {
-                setSnackbar({ open: true, message: 'You are already registered.', severity: 'info' });
-            }
+            setSnackbar({ open: true, message: "Registration successful!", severity: 'success' });
+            // Update local state so the button changes immediately without a refresh
+            setUserRegistrations([...userRegistrations, eventId]);
         } catch (err) {
-            setSnackbar({ open: true, message: 'Server error.', severity: 'error' });
+            const errorMsg = err.response?.data?.message || 'You are already registered or server error';
+            setSnackbar({ open: true, message: errorMsg, severity: 'info' });
         }
     };
 

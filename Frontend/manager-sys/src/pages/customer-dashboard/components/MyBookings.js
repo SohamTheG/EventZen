@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Typography, Chip } from '@mui/material';
 import dayjs from 'dayjs';
@@ -12,19 +13,19 @@ export default function MyBookings() {
 
         const loadData = async () => {
             try {
-                // 1. Fetch Venues from Node.js to get the names
-                const venueRes = await fetch('http://localhost:9001/api/venues');
-                const venues = await venueRes.json();
+                // 1. Fetch Venues to get the names
+                const venueRes = await apiClient.get('/api/venues');
+                const venues = venueRes.data;
 
                 // Convert array to an easy-to-search object: { 1: "Grand Hall", 2: "Beach Resort" }
                 const vMap = {};
                 venues.forEach(v => { vMap[v.id] = v.name; });
                 setVenueMap(vMap);
 
-                // 2. Fetch Bookings from Spring Boot
+                // 2. Fetch Bookings
                 if (user && user.id) {
-                    const bookingRes = await fetch(`http://localhost:9002/api/bookings/customer/${user.id}`);
-                    const bookingData = await bookingRes.json();
+                    const bookingRes = await apiClient.get(`/api/bookings/customer/${user.id}`);
+                    const bookingData = bookingRes.data;
                     setBookings(bookingData);
                 }
             } catch (err) {

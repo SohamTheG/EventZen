@@ -1,5 +1,17 @@
+# Node & React
 node_modules/
-dist/
+build/
 .env
+
+# Java & Spring Boot
 target/
-*.class
+*.jar
+.mvn/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# OS files
+.DS_Store

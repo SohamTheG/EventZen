@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import { DataGrid } from '@mui/x-data-grid';
 import {
     Box,
@@ -19,16 +20,16 @@ export default function BookingApproval() {
 
     const loadData = async () => {
         try {
-            // 1. Fetch Venues from Node.js (Port 9001) to map Names to IDs
-            const vRes = await fetch('http://localhost:9001/api/venues');
-            const venues = await vRes.json();
+            // 1. Fetch Venues to map Names to IDs
+            const vRes = await apiClient.get('/api/venues');
+            const venues = vRes.data;
             const vMap = {};
             venues.forEach(v => vMap[v.id] = v.name);
             setVenueMap(vMap);
 
-            // 2. Fetch All Bookings from Spring Boot (Port 8080)
-            const bRes = await fetch('http://localhost:9002/api/bookings');
-            const bData = await bRes.json();
+            // 2. Fetch All Bookings
+            const bRes = await apiClient.get('/api/bookings');
+            const bData = bRes.data;
             setBookings(bData);
         } catch (err) {
             console.error("Failed to load dashboard data:", err);
@@ -40,9 +41,7 @@ export default function BookingApproval() {
     const handleAction = async (id, action) => {
         try {
             // Action is either 'approve' or 'reject' matching our new Controller endpoints
-            const response = await fetch(`http://localhost:9002/api/bookings/admin/${id}/${action}`, {
-                method: 'PUT',
-            });
+            const response = await apiClient.put(`/api/bookings/admin/${id}/${action}`);
 
             if (response.ok) {
                 setNotification({

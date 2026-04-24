@@ -10,14 +10,13 @@ import com.project.EventManageUserAPI.models.Attendee;
 
 @RestController
 @RequestMapping("/api/attendees")
-@CrossOrigin(origins = "http://localhost:3000") // 1. Allow React to connect
+// @CrossOrigin(origins = "http://localhost:3000") // 1. Allow React to connect
 public class AttendeeController {
 
     @Autowired
     private AttendeeServices attendeeServices;
 
     // 2. The specific registration endpoint for the "Attend" button
-    @CrossOrigin(origins = "http://localhost:3000") // 1. Allow React to connect
     @PostMapping("/register")
     public ResponseEntity<?> registerAttendee(@RequestBody Attendee attendee) {
         try {

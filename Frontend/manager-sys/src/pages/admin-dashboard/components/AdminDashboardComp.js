@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import {
     Grid, Paper, Typography, Box, Button, Stack,
     Avatar, Divider, List, ListItem, ListItemText, ListItemAvatar
@@ -19,18 +20,18 @@ export default function AdminDashboardComp({ setSelectedView }) {
     useEffect(() => {
         const fetchAdminStats = async () => {
             try {
-                // 1. User Stats (Port 9000)
-                const uRes = await fetch('http://localhost:9000/auth/all');
-                const users = await uRes.json();
+                // 1. User Stats
+                const uRes = await apiClient.get('/auth/all');
+                const users = uRes.data;
 
-                // 2. Booking Stats (Port 9002)
-                const bRes = await fetch('http://localhost:9002/api/bookings');
-                const bookings = await bRes.json();
+                // 2. Booking Stats
+                const bRes = await apiClient.get('/api/bookings');
+                const bookings = bRes.data;
                 const pending = bookings.filter(b => b.status === 'PENDING').length;
 
-                // 3. Venue Stats (Port 9001)
-                const vRes = await fetch('http://localhost:9001/api/venues');
-                const venues = await vRes.json();
+                // 3. Venue Stats
+                const vRes = await apiClient.get('/api/venues');
+                const venues = vRes.data;
 
                 setStats({
                     users: users.length,

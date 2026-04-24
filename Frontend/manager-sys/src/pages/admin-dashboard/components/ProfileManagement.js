@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import apiClient from '../../../api/axiosConfig';
 import {
     Box, Typography, TextField, Button, Paper, Stack,
     Avatar, Snackbar, Alert, Chip
@@ -36,29 +37,20 @@ export default function ProfileManagement() {
 
             console.log("Sending fixed payload:", payload);
 
-            const response = await fetch(`http://localhost:9000/user/${user.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
+            const response = await apiClient.put(`/user/${user.id}`, payload);
 
-            if (response.ok) {
-                // 4. Update localStorage
-                const updatedUser = { ...user, name: formData.name, email: formData.email };
-                delete updatedUser.password;
+            // 4. Update localStorage
+            const updatedUser = { ...user, name: formData.name, email: formData.email };
+            delete updatedUser.password;
 
-                localStorage.setItem('user', JSON.stringify(updatedUser));
+            localStorage.setItem('user', JSON.stringify(updatedUser));
 
-                setMsg({ open: true, text: 'Profile updated successfully! Syncing...', severity: 'success' });
+            setMsg({ open: true, text: 'Profile updated successfully! Syncing...', severity: 'success' });
 
-                // 5. Reset password field in UI
-                setFormData(prev => ({ ...prev, password: '' }));
+            // 5. Reset password field in UI
+            setFormData(prev => ({ ...prev, password: '' }));
 
-                setTimeout(() => window.location.reload(), 1500);
-            } else {
-                const errorText = await response.text();
-                setMsg({ open: true, text: `Error: ${errorText}`, severity: 'error' });
-            }
+            setTimeout(() => window.location.reload(), 1500);
         } catch (err) {
             console.error("Update Error:", err);
             setMsg({ open: true, text: 'Failed to update profile', severity: 'error' });
