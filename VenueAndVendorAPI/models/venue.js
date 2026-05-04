@@ -20,7 +20,12 @@ const Venue = sequelize.define('Venue', {
     },
     price_per_day: {
         type: DataTypes.DECIMAL(10, 2)
+    },
+    is_available: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
     }
+
 });
 
 module.exports = Venue;

@@ -5,20 +5,29 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.events_bookings_api.config.RabbitConfig;
 import com.project.events_bookings_api.models.Booking;
 import com.project.events_bookings_api.models.BookingStatus;
 import com.project.events_bookings_api.repository.BookingRepository;
 
 import jakarta.transaction.Transactional;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 @Service
 public class BookingService {
     @Autowired
     private BookingRepository bookingRepo;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     public Booking createBooking(Booking booking) {
         booking.setStatus(BookingStatus.PENDING);
-        return bookingRepo.save(booking);
+        Booking savedBooking = bookingRepo.save(booking);
+
+        rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, savedBooking);
+
+        return savedBooking;
     }
 
     public Booking updateStatus(Long id, BookingStatus status) {

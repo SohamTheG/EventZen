@@ -67,23 +67,23 @@ services:
       - DB_PASS=admin
       - DB_HOST=mysql-db # This is the magic link instead of 127.0.0.1
   # --- 5. FRONTEND ---
-  frontend-app:
-    build: ./Frontend/manager-sys
-    container_name: eventzen-frontend
-    ports:
-      - "3000:3000" # Changed back to 3000:3000 to match React!
-    depends_on:
-      mysql-db:
-        condition: service_healthy
-    environment:
-      # These variables ensure React hot-reloading works perfectly through Windows Docker
-      - WATCHPACK_POLLING=true
-      - WDS_SOCKET_PORT=0
-    volumes:
-      # This mirrors your live Windows folder into the container
-      - ./Frontend/manager-sys:/app
-      # This protects the container's node_modules from being overwritten
-      - /app/node_modules
+  # frontend-app:
+  #   build: ./Frontend/manager-sys
+  #   container_name: eventzen-frontend
+  #   ports:
+  #     - "3000:3000" # Changed back to 3000:3000 to match React!
+  #   depends_on:
+  #     mysql-db:
+  #       condition: service_healthy
+  #   environment:
+  #     # These variables ensure React hot-reloading works perfectly through Windows Docker
+  #     - WATCHPACK_POLLING=true
+  #     - WDS_SOCKET_PORT=0
+  #   volumes:
+  #     # This mirrors your live Windows folder into the container
+  #     - ./Frontend/manager-sys:/app
+  #     # This protects the container's node_modules from being overwritten
+  #     - /app/node_modules
   # --- 6. API GATEWAY ---
   # --- 6. API GATEWAY ---
   api-gateway:
@@ -95,3 +95,12 @@ services:
       - user-auth-api # <-- CHANGED from user-auth-service
       - venue-vendor-api # <-- CHANGED from venue-vendor-service
       - events-booking-api # <-- CHANGED from events-booking-service
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-broker
+    ports:
+      - "5672:5672" # The port Java uses to send messages
+      - "15672:15672" # The port YOU use to see the Web UI
+    environment:
+      RABBITMQ_DEFAULT_USER: myuser
+      RABBITMQ_DEFAULT_PASS: mypassword
