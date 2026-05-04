@@ -6,6 +6,7 @@ const vendorRoutes = require('./routes/vendorRoutes');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const connectToRabbitMQ = require('./config/rabbitMq'); // <-- Import it
+const { connectRedis } = require('./config/redis'); // <-- Import Redis
 
 // ... below your venue routes
 require('dotenv').config();
@@ -64,5 +65,6 @@ sequelize.sync({ alter: true }) // 'alter' updates tables if you change the code
         console.log('Database synced successfully');
         app.listen(PORT, () => console.log(`Venue Service running on port ${PORT}`));
         connectToRabbitMQ();
+        connectRedis(); // <-- Connect to Redis on startup
     })
     .catch(err => console.log('Error syncing database: ' + err));

@@ -43,14 +43,19 @@ export default function BookingApproval() {
             // Action is either 'approve' or 'reject' matching our new Controller endpoints
             const response = await apiClient.put(`/api/bookings/admin/${id}/${action}`);
 
-            if (response.ok) {
-                setNotification({
-                    open: true,
-                    message: `Booking ${action === 'approve' ? 'Approved' : 'Rejected'} successfully!`,
-                    severity: action === 'approve' ? 'success' : 'error'
-                });
-                loadData(); // Refresh list
-            }
+
+            setNotification({
+                open: true,
+                message: `Booking ${action === 'approve' ? 'Approved' : 'Rejected'} successfully!`,
+                severity: action === 'approve' ? 'success' : 'error'
+            });
+
+            // Instantly update the UI local memory
+            setBookings(prevBookings =>
+                prevBookings.map(b => b.id === id ? { ...b, status: action.toUpperCase() } : b)
+            );
+            loadData(); // Refresh list
+
         } catch (err) {
             setNotification({ open: true, message: 'Server error occurred', severity: 'error' });
         }

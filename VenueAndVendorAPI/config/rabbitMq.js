@@ -1,6 +1,7 @@
 const amqp = require('amqplib');
 // 1. IMPORT YOUR SEQUELIZE MODEL (Adjust the path if your models folder is somewhere else)
 const Venue = require('../models/venue');
+const { redisClient } = require('./redis');
 
 async function connectToRabbitMQ() {
     try {
@@ -31,6 +32,7 @@ async function connectToRabbitMQ() {
                             { is_available: false }, // Set your new column to false
                             { where: { id: targetVenueId } }
                         );
+                        await redisClient.del('venues:all');
                         console.log(`✅ SUCCESS: Venue ${targetVenueId} marked as unavailable in the database.`);
                     } else {
                         console.log("⚠️ WARNING: Payload did not contain a venueId.");

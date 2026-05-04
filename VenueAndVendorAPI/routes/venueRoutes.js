@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { Venue, Vendor } = require('../models');
+const { redisClient } = require('../config/redis');
+
+
 
 /**
  * @swagger
@@ -62,6 +65,7 @@ const { Venue, Vendor } = require('../models');
 router.post('/', async (req, res) => {
     try {
         const venue = await Venue.create(req.body);
+        await redisClient.del('venues:all');
         res.status(201).json(venue);
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -106,9 +110,19 @@ router.post('/', async (req, res) => {
 // READ ALL: Get all venues (including their assigned vendors)
 router.get('/', async (req, res) => {
     try {
+        const cacheKey = 'venues:all';
+        const cachedVenues = await redisClient.get(cacheKey);
+
+        if (cachedVenues) {
+            console.log('Cache Hit: Returning venues from Redis');
+            return res.json(JSON.parse(cachedVenues));
+        }
+
+        console.log('Cache Miss: Fetching venues from Database');
         const venues = await Venue.findAll({
             include: Vendor // This "joins" the vendor data automatically
         });
+        await redisClient.setEx(cacheKey, 3600, JSON.stringify(venues));
         res.json(venues);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -248,6 +262,7 @@ router.put('/:id', async (req, res) => {
             where: { id: req.params.id }
         });
         if (updated) {
+            await redisClient.del('venues:all');
             const updatedVenue = await Venue.findByPk(req.params.id);
             return res.json(updatedVenue);
         }
@@ -312,6 +327,7 @@ router.delete('/:id', async (req, res) => {
             where: { id: req.params.id }
         });
         if (deleted) {
+            await redisClient.del('venues:all');
             return res.json({ message: 'Venue deleted successfully' });
         }
         throw new Error('Venue not found');
@@ -393,6 +409,7 @@ router.post('/:venueId/vendors/:vendorId', async (req, res) => {
         // Because we defined a belongsToMany relationship, 
         // Sequelize automatically gives us these helper methods!
         await venue.addVendor(vendor);
+        await redisClient.del('venues:all');
 
         res.json({ message: `Successfully linked ${vendor.name} to ${venue.name}` });
     } catch (err) {

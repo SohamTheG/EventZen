@@ -66,6 +66,7 @@ services:
       - DB_USER=root
       - DB_PASS=admin
       - DB_HOST=mysql-db # This is the magic link instead of 127.0.0.1
+      - REDIS_URL=redis://redis-cache:6379
   # --- 5. FRONTEND ---
   # frontend-app:
   #   build: ./Frontend/manager-sys
@@ -104,3 +105,9 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: myuser
       RABBITMQ_DEFAULT_PASS: mypassword
+  # --- 7. REDIS CACHE ---
+  redis-cache:
+    image: redis:alpine
+    container_name: eventzen-redis
+    ports:
+      - "6379:6379"
