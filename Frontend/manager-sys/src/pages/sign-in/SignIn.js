@@ -86,8 +86,9 @@ export default function SignIn(props) {
       const response = await apiClient.post('/auth/login', { email, password });
       alert("Login Successful!");
 
-      const user = response.data;
+      const { token, user } = response.data;
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('jwt_token', token);
 
       if (user.role.toUpperCase() === 'ADMIN') {
         navigate("/admin-dashboard"); // Redirect to admin dashboard

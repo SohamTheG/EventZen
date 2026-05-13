@@ -70,4 +70,17 @@ EventZen is a cloud-native, polyglot microservice platform for enterprise event 
    - Docker containerization is complete.
    - Base RabbitMQ implementation is complete (Venue booking triggers unavailability).
    - Gateway Aggregator for Admin Dashboard is complete.
-   - **NEXT IMMEDIATE STEP:** Implement Redis caching in `venue-vendor-service` for the `/api/venues` endpoint.
+   - Implemented Redis caching in `venue-vendor-service` for the `/api/venues` endpoint.
+6. **Future possible feature implementations**
+   - features to implement using all the technologies possible
+   - consider the best possible order of implementation for the below
+   - capacity - ticket booking for attendees
+   - Cost per ticket, cost for booking venues, vendor costs
+   - managing days for events - like conflict of venues on same day
+   - add a calender similar to google calender to see all the events date wise
+   - deployment of app - not sure to do this immediately or after everything is done. also considering doing all of  it for free. bcoz i dont want to do it last minute and also i need persistent storage unline current one that keeps resetting.
+   - ML based search bars for searching events , venues and attendees users
+   - generate unique qr codes for booked tickets like u get on movie tickets type stuff 
+   - i am not sure if the jwt auth i have implemented or not. if possible implement it before i do everything on the   list
+   - attendee management. on both admin side and if the user is hosting an event then he should also be able to manipulate the event
+   - change user dashboard to main page with current events and venues directly as they dont need their own   statistics
