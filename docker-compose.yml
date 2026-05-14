@@ -48,7 +48,7 @@ services:
       - DB_USER=${AIVEN_USER} # Docker grabs this from the .env file
       - DB_PASS=${AIVEN_PASS} # Docker grabs this from the .env file
       # Removed local DB overrides so it safely uses your application.properties!
-
+      - RABBITMQ_URL=${RABBITMQ_URL}
       # --- 4. NODE.JS API ---
   venue-vendor-api:
     build: ./VenueAndVendorAPI
@@ -62,7 +62,7 @@ services:
     environment:
       - PORT=9001
       # Removed local DB & Redis overrides so it safely uses your .env file!
-
+      - RABBITMQ_URL=${RABBITMQ_URL}
       # --- 5. FRONTEND ---
       # frontend-app:
       #   build: ./Frontend/manager-sys
@@ -92,16 +92,16 @@ services:
       - user-auth-api # <-- CHANGED from user-auth-service
       - venue-vendor-api # <-- CHANGED from venue-vendor-service
       - events-booking-api # <-- CHANGED from events-booking-service
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq-broker
-    ports:
-      - "5672:5672" # The port Java uses to send messages
-      - "15672:15672" # The port YOU use to see the Web UI
-    environment:
-      RABBITMQ_DEFAULT_USER: myuser
-      RABBITMQ_DEFAULT_PASS: mypassword
+  # --- Local RabbitMQ (Commented out since using Cloud RabbitMQ) ---
+  # rabbitmq:
+  #   image: rabbitmq:3-management
+  #   container_name: rabbitmq-broker
+  #   ports:
+  #     - "5672:5672" # The port Java uses to send messages
+  #     - "15672:15672" # The port YOU use to see the Web UI
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: myuser
+  #     RABBITMQ_DEFAULT_PASS: mypassword
   # --- 7. REDIS CACHE ---
   #   redis-cache:
   #     image: redis:alpine

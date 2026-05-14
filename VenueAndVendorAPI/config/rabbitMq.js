@@ -5,7 +5,7 @@ const { redisClient } = require('./redis');
 
 async function connectToRabbitMQ() {
     try {
-        const connection = await amqp.connect('amqp://myuser:mypassword@rabbitmq-broker:5672');
+        const connection = await amqp.connect(process.env.RABBITMQ_URL);
         const channel = await connection.createChannel();
         const queueName = 'venue-booking-queue';
 
