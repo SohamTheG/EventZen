@@ -49,6 +49,7 @@ services:
       - DB_PASS=${AIVEN_PASS} # Docker grabs this from the .env file
       # Removed local DB overrides so it safely uses your application.properties!
       - RABBITMQ_URL=${RABBITMQ_URL}
+      - REDIS_URL=${REDIS_URL}
       # --- 4. NODE.JS API ---
   venue-vendor-api:
     build: ./VenueAndVendorAPI
