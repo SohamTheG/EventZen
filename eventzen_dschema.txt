@@ -14,7 +14,20 @@
 # Table, Create Table
 'vendors', 'CREATE TABLE `vendors` (\n  `id` bigint NOT NULL AUTO_INCREMENT,\n  `name` varchar(255) NOT NULL,\n  `type` varchar(255) NOT NULL,\n  `createdAt` datetime NOT NULL,\n  `updatedAt` datetime NOT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci'
 # Table, Create Table
-'venues', 'CREATE TABLE `venues` (\n  `id` bigint NOT NULL AUTO_INCREMENT,\n  `name` varchar(255) NOT NULL,\n  `location` varchar(255) NOT NULL,\n  `capacity` int DEFAULT NULL,\n  `price_per_day` decimal(10,2) DEFAULT NULL,\n  `createdAt` datetime NOT NULL,\n  `updatedAt` datetime NOT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci'
+-- venue_service_db.Venues definition
+
+CREATE TABLE "Venues" (
+  "id" bigint NOT NULL AUTO_INCREMENT,
+  "name" varchar(255) NOT NULL,
+  "location" varchar(255) NOT NULL,
+  "capacity" int DEFAULT NULL,
+  "price_per_day" decimal(10,2) DEFAULT NULL,
+  "is_available" tinyint(1) DEFAULT '1',
+  "createdAt" datetime NOT NULL,
+  "updatedAt" datetime NOT NULL,
+  PRIMARY KEY ("id")
+);
+
 # Table, Create Table
 'venuevendors', 'CREATE TABLE `venuevendors` (\n  `createdAt` datetime NOT NULL,\n  `updatedAt` datetime NOT NULL,\n  `VenueId` bigint NOT NULL,\n  `VendorId` bigint NOT NULL,\n  PRIMARY KEY (`VenueId`,`VendorId`),\n  KEY `VendorId` (`VendorId`),\n  CONSTRAINT `venuevendors_ibfk_1` FOREIGN KEY (`VenueId`) REFERENCES `venues` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,\n  CONSTRAINT `venuevendors_ibfk_2` FOREIGN KEY (`VendorId`) REFERENCES `vendors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci'
 -------------------------------------------

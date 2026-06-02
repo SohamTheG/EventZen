@@ -1,8 +1,10 @@
 package com.project.events_bookings_api.services;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.project.events_bookings_api.config.RabbitConfig;
@@ -15,25 +17,56 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 @Service
 public class BookingService {
+
     @Autowired
     private BookingRepository bookingRepo;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    // Inject Redis
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Transactional
     public Booking createBooking(Booking booking) {
-        booking.setStatus(BookingStatus.PENDING);
-        Booking savedBooking = bookingRepo.save(booking);
+        // 1. Create a highly specific lock key
+        String lockKey = "lock:venue:" + booking.getVenueId() + ":date:" + booking.getEventDate().toString();
 
-        rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, savedBooking);
+        // 2. Attempt to acquire the Redis lock (Expires in 5 mins to prevent permanent
+        // deadlocks)
+        Boolean lockAcquired = redisTemplate.opsForValue().setIfAbsent(lockKey, "LOCKED", Duration.ofMinutes(5));
 
-        return savedBooking;
+        if (Boolean.FALSE.equals(lockAcquired)) {
+            throw new IllegalStateException("Already booked for this day.");
+        }
+
+        try {
+            // 3. The lock is ours! Double-check the DB to ensure it wasn't booked
+            // previously
+            boolean isAlreadyBooked = bookingRepo.existsConflict(booking.getVenueId(), booking.getEventDate());
+            if (isAlreadyBooked) {
+                throw new IllegalStateException("Already booked for this day.");
+            }
+
+            // 4. Proceed with your original logic
+            booking.setStatus(BookingStatus.PENDING);
+            Booking savedBooking = bookingRepo.save(booking);
+
+            // 5. Fire your RabbitMQ event
+            rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, savedBooking);
+
+            return savedBooking;
+
+        } finally {
+            // 6. CRITICAL: Always release the lock when finished!
+            redisTemplate.delete(lockKey);
+        }
     }
 
     public Booking updateStatus(Long id, BookingStatus status) {
         Booking booking = bookingRepo.findById(id).orElseThrow();
         booking.setStatus(status);
-        // If approved, you could trigger logic here to notify the user
         return bookingRepo.save(booking);
     }
 
@@ -46,8 +79,6 @@ public class BookingService {
     }
 
     // ----------------------FOR ADMIN------------------
-
-    // GET /admin/bookings
     public List<Booking> getAllBookingsForAdmin() {
         return bookingRepo.findAll();
     }
@@ -56,7 +87,6 @@ public class BookingService {
         return bookingRepo.findByStatus(BookingStatus.APPROVED);
     }
 
-    // PUT /admin/bookings/{id}/approve
     @Transactional
     public Booking approveBooking(Long id) {
         Booking booking = bookingRepo.findById(id)
@@ -64,7 +94,6 @@ public class BookingService {
 
         booking.setStatus(BookingStatus.APPROVED);
 
-        // Logical link: Once approved, the event can be seen by others
         if (booking.getEvent() != null) {
             booking.getEvent().setPublic(true);
         }
@@ -72,7 +101,6 @@ public class BookingService {
         return bookingRepo.save(booking);
     }
 
-    // PUT /admin/bookings/{id}/reject
     @Transactional
     public Booking rejectBooking(Long id) {
         Booking booking = bookingRepo.findById(id)

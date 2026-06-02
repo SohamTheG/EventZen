@@ -54,8 +54,19 @@ export default function VenueBrowser() {
             alert("Booking request sent! Wait for Admin approval.");
             setBookingOpen(false);
         } catch (error) {
-            console.error("Booking failed:", error);
-            alert('Booking failed: ' + (error.response?.data?.message || error.message));
+            if (error.response && error.response.data && error.response.data.message) {
+
+                if (error.response.data.message === "Already booked for this day.") {
+                    // Trigger your popup!
+                    alert("Sorry! This venue is already booked for this day. Please select another date.");
+                } else {
+                    alert("An error occurred: " + error.response.data.message);
+                }
+
+            } else {
+                console.error("Network Error:", error);
+                alert("Could not reach the server.");
+            }
         }
     };
     const getVenueImage = (v) => {
