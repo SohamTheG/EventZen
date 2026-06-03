@@ -13,31 +13,38 @@ export default function AdminTicketScanner() {
 
     // The new library passes the raw text directly as the first argument
     const handleScan = async (result) => {
-        // Safely extract the text, regardless of which version of the library you have
-        const text = result?.[0]?.rawValue || (typeof result === 'string' ? result : null);
+        try {
+            // 1. Safely grab the text. The new library might pass an object or an array.
+            const rawText = result?.[0]?.rawValue || result?.rawValue || (typeof result === 'string' ? result : null);
 
-        if (text && !loading && !ticket) {
-            setLoading(true);
-            setError('');
+            // Ignore empty scans
+            if (!rawText) return;
 
-            try {
-                // Safely extract the UUID from the end of the URL
-                const urlParts = text.split('/');
-                const uuid = urlParts.pop(); // Grabs the very last segment
+            // 2. Only proceed if we aren't already loading a ticket
+            if (!loading && !ticket) {
+                setLoading(true);
+                setError('');
 
-                if (!uuid || uuid.length < 20) {
-                    throw new Error("This is not a valid EventZen QR Code.");
-                }
+                // 3. Extract the UUID
+                const urlParts = rawText.split('/');
+                const uuid = urlParts[urlParts.length - 1];
 
+                // 4. Fetch the data
                 const response = await apiClient.get(`/api/attendees/ticket/view/${uuid}`);
                 setTicket(response.data);
-            } catch (err) {
-                // DON'T swallow the error. Print exactly why it failed!
-                const errorMsg = err.response?.data?.message || err.message || 'Network connection failed.';
-                setError(`Scan Failed: ${errorMsg}`);
-            } finally {
                 setLoading(false);
             }
+        } catch (err) {
+            setLoading(false);
+
+            // THE MAGIC MOBILE DEBUGGER:
+            // Grab the exact error message, even if it's buried deep
+            const exactError = err.response?.data?.message || err.message || JSON.stringify(err);
+
+            // Force the phone to throw a native pop-up warning!
+            alert("MOBILE CRASH REPORT:\n\n" + exactError);
+
+            setError(exactError);
         }
     };
 
