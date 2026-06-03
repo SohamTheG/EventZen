@@ -31,7 +31,6 @@ public class SecurityConfig {
                                 "/swagger-ui.html")
                         .permitAll()
                         .requestMatchers("/user/**").permitAll() // Permit DELETE/PUT on user paths
-                        .requestMatchers("/api/attendees/ticket/view/**").permitAll()
                         .anyRequest().authenticated());
         return http.build();
     }

@@ -16,6 +16,8 @@ import AttendeeManagement from './components/AttendeeManagement';
 import UserManagement from './components/UserManagement';
 import ProfileManagement from './components/ProfileManagement';
 import AdminDashboardComp from './components/AdminDashboardComp';
+import AdminTicketScanner from './components/AdminTicketScanner';
+
 
 import {
   chartsCustomizations,
@@ -50,6 +52,8 @@ export default function Dashboard(props) {
         return <ProfileManagement />
       case 'dashboard':
         return <AdminDashboardComp setSelectedView={setSelectedView} />;
+      case 'Ticket Scanner':
+        return <AdminTicketScanner />;
       default:
         return <AdminDashboardComp setSelectedView={setSelectedView} />; // Default dashboard charts/stats
     }
