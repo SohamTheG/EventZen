@@ -13,38 +13,36 @@ export default function AdminTicketScanner() {
 
     // The new library passes the raw text directly as the first argument
     const handleScan = async (result) => {
+        // NUCLEAR DEBUGGER: Pop up the exact millisecond it beeps!
+        // This will print the raw object the camera saw.
+        alert("CAMERA BEEPED!\nRaw Data:\n" + JSON.stringify(result));
+
         try {
-            // 1. Safely grab the text. The new library might pass an object or an array.
+            // Safely extract text
             const rawText = result?.[0]?.rawValue || result?.rawValue || (typeof result === 'string' ? result : null);
 
-            // Ignore empty scans
-            if (!rawText) return;
+            if (!rawText) {
+                alert("ERROR: Could not extract text from the scan result!");
+                return;
+            }
 
-            // 2. Only proceed if we aren't already loading a ticket
             if (!loading && !ticket) {
                 setLoading(true);
                 setError('');
 
-                // 3. Extract the UUID
                 const urlParts = rawText.split('/');
                 const uuid = urlParts[urlParts.length - 1];
 
-                // 4. Fetch the data
+                alert("EXTRACTED UUID:\n" + uuid + "\nAttempting API call...");
+
                 const response = await apiClient.get(`/api/attendees/ticket/view/${uuid}`);
                 setTicket(response.data);
                 setLoading(false);
             }
         } catch (err) {
             setLoading(false);
-
-            // THE MAGIC MOBILE DEBUGGER:
-            // Grab the exact error message, even if it's buried deep
-            const exactError = err.response?.data?.message || err.message || JSON.stringify(err);
-
-            // Force the phone to throw a native pop-up warning!
-            alert("MOBILE CRASH REPORT:\n\n" + exactError);
-
-            setError(exactError);
+            alert("API CRASHED:\n" + (err.response?.data?.message || err.message));
+            setError(err.message);
         }
     };
 
