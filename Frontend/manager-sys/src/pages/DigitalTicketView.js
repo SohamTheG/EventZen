@@ -10,17 +10,24 @@ export default function DigitalTicketView() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        // Find your base URL (either localhost or your AWS IP)
-        const baseUrl = process.env.REACT_APP_API_URL;
+        const baseUrl = process.env.REACT_APP_API_URL || 'http://13.235.77.80:9002';
 
-        // Use raw 'fetch' instead of apiClient to bypass the JWT interceptor!
         fetch(`${baseUrl}/api/attendees/ticket/view/${uuid}`)
             .then(async (response) => {
-                if (!response.ok) {
-                    throw new Error('Invalid or Expired Ticket');
+                // 1. Grab the raw text FIRST, no matter what it is
+                const rawText = await response.text();
+
+                try {
+                    // 2. Try to parse it as JSON
+                    const data = JSON.parse(rawText);
+
+                    if (!response.ok) throw new Error(data.message || 'Error');
+                    setTicket(data);
+                } catch (e) {
+                    // 3. IF IT FAILS, IT PRINTS THE HTML TO THE SCREEN!
+                    console.error("Server returned HTML:", rawText);
+                    setError(`Server Error: ${rawText.substring(0, 100)}...`);
                 }
-                const data = await response.json();
-                setTicket(data);
             })
             .catch(err => {
                 setError(err.message);
