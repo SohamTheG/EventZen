@@ -21,6 +21,8 @@ export default function PublicEvents() {
     const [quantity, setQuantity] = useState(1);
     const [purchasedTicket, setPurchasedTicket] = useState(null);
 
+    const [myTickets, setMyTickets] = useState([]); // Stores the full ticket objects
+
     const loadPublicData = async () => {
         const loggedInUser = JSON.parse(localStorage.getItem('user'));
         try {
@@ -38,9 +40,13 @@ export default function PublicEvents() {
             if (loggedInUser) {
                 const aRes = await apiClient.get('/api/attendees/all');
                 const allAttendees = aRes.data;
-                const myEvents = allAttendees
-                    .filter(a => a.user?.id === loggedInUser.id)
-                    .map(a => a.eventId);
+
+                // 1. Get the FULL ticket objects for this user
+                const userTickets = allAttendees.filter(a => a.user?.id === loggedInUser.id);
+                setMyTickets(userTickets); // Save them to state!
+
+                // 2. Keep the old ID list so the cards know you are attending
+                const myEvents = userTickets.map(a => a.eventId);
                 setUserRegistrations(myEvents);
             }
         } catch (err) {
@@ -58,6 +64,12 @@ export default function PublicEvents() {
         setQuantity(1); // Reset counter
         setPurchasedTicket(null); // Clear old QR codes
         setBookingModalOpen(true);
+    };
+
+    // RE-OPEN AN EXISTING TICKET
+    const handleViewTicket = (ticketObject) => {
+        setPurchasedTicket(ticketObject); // Load the saved ticket
+        setBookingModalOpen(true);        // Open the modal
     };
 
     // THE ACTUAL API CALL (Triggered from inside the modal)
@@ -95,6 +107,8 @@ export default function PublicEvents() {
             <Grid container spacing={3}>
                 {events.length > 0 ? events.map((item) => {
                     const isAttending = userRegistrations.includes(item.id);
+                    // Find the specific ticket object for this card
+                    const myTicketForThisEvent = myTickets.find(t => t.eventId === item.id);
 
                     return (
                         <Grid item xs={12} sm={6} md={4} key={item.id}>
@@ -136,13 +150,12 @@ export default function PublicEvents() {
                                         fullWidth
                                         variant={isAttending ? "outlined" : "contained"}
                                         color={isAttending ? "success" : "primary"}
-                                        disabled={isAttending}
+                                        // Remove the 'disabled={isAttending}' line!
                                         startIcon={isAttending ? <CheckCircleIcon /> : null}
                                         sx={{ borderRadius: 2, fontWeight: 'bold' }}
-                                        // THIS WAS THE MISSING LINK! 
-                                        onClick={() => handleOpenModal(item)}
+                                        onClick={() => isAttending ? handleViewTicket(myTicketForThisEvent) : handleOpenModal(item)}
                                     >
-                                        {isAttending ? "Attending" : "Buy Tickets"}
+                                        {isAttending ? "View My Ticket" : "Buy Tickets"}
                                     </Button>
                                 </CardActions>
                             </Card>
@@ -160,7 +173,9 @@ export default function PublicEvents() {
                 {purchasedTicket ? (
                     <Box sx={{ p: 4, textAlign: 'center' }}>
                         <CheckCircleIcon color="success" sx={{ fontSize: 60, mb: 2 }} />
-                        <Typography variant="h5" fontWeight="bold" gutterBottom>Payment Successful!</Typography>
+                        <Typography variant="h5" fontWeight="bold" gutterBottom>
+                            {quantity > 1 ? "Payment Successful!" : "Your Digital Ticket"}
+                        </Typography>
                         <Typography variant="body1" sx={{ mb: 3 }}>You bought {purchasedTicket.quantity} tickets.</Typography>
 
                         <Box sx={{ border: '2px dashed #ccc', p: 2, display: 'inline-block', borderRadius: 2 }}>

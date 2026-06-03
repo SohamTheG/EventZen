@@ -78,7 +78,7 @@ public class AttendeeServices {
             // THE FIX: Make it a URL pointing to your React frontend!
             // (Use localhost for now, we will change it to your actual domain in
             // production)
-            String frontendDomain = "http://localhost:3000";
+            String frontendDomain = "https://event-zen-two.vercel.app";
             String qrData = frontendDomain + "/ticket/view/" + uniqueTicketId;
 
             // Tell the engine to draw the image
