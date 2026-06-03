@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { QrReader } from 'react-qr-reader';
-import apiClient from '../../../api/axiosConfig'; // Your authenticated client!
+import { Scanner } from '@yudiel/react-qr-scanner'; // <-- The new modern import
+import apiClient from '../../../api/axiosConfig';
 import { Box, Card, Typography, Button, Divider, Chip, CircularProgress } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -11,19 +11,16 @@ export default function AdminTicketScanner() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // This fires automatically when the camera sees a QR code
-    const handleScan = async (result, error) => {
-        if (!!result && !loading && !ticket) {
+    // The new library passes the raw text directly as the first argument
+    const handleScan = async (text) => {
+        if (text && !loading && !ticket) {
             setLoading(true);
             setError('');
 
             try {
-                // The QR code contains the full URL (e.g. https://.../ticket/view/uuid)
-                // We just need to extract the UUID from the very end of it.
-                const urlParts = result?.text.split('/');
+                const urlParts = text.split('/');
                 const uuid = urlParts[urlParts.length - 1];
 
-                // Fetch using your SECURE API client (JWT token is attached automatically!)
                 const response = await apiClient.get(`/api/attendees/ticket/view/${uuid}`);
                 setTicket(response.data);
             } catch (err) {
@@ -49,10 +46,10 @@ export default function AdminTicketScanner() {
 
             {!ticket && !error && (
                 <Card sx={{ p: 1, borderRadius: 4, overflow: 'hidden', boxShadow: 3, mb: 3 }}>
-                    <QrReader
-                        onResult={handleScan}
-                        constraints={{ facingMode: 'environment' }} // Forces the back camera on phones!
-                        style={{ width: '100%' }}
+                    <Scanner
+                        onResult={(text) => handleScan(text)}
+                        onError={(error) => console.error(error?.message)}
+                        options={{ delayBetweenScanAttempts: 1000 }}
                     />
                 </Card>
             )}
