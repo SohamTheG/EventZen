@@ -62,7 +62,7 @@ export default function AdminTicketScanner() {
             {!ticket && !error && (
                 <Card sx={{ p: 1, borderRadius: 4, overflow: 'hidden', boxShadow: 3, mb: 3 }}>
                     <Scanner
-                        onResult={(text) => handleScan(text)}
+                        onScan={(result) => handleScan(result)}
                         onError={(error) => console.error(error?.message)}
                         options={{ delayBetweenScanAttempts: 1000 }}
                     />
