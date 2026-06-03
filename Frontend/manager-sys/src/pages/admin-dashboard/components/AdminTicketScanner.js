@@ -15,7 +15,7 @@ export default function AdminTicketScanner() {
     const handleScan = async (result) => {
         // NUCLEAR DEBUGGER: Pop up the exact millisecond it beeps!
         // This will print the raw object the camera saw.
-        alert("CAMERA BEEPED!\nRaw Data:\n" + JSON.stringify(result));
+        // alert("CAMERA BEEPED!\nRaw Data:\n" + JSON.stringify(result));
 
         try {
             // Safely extract text
@@ -33,7 +33,7 @@ export default function AdminTicketScanner() {
                 const urlParts = rawText.split('/');
                 const uuid = urlParts[urlParts.length - 1];
 
-                alert("EXTRACTED UUID:\n" + uuid + "\nAttempting API call...");
+                // alert("EXTRACTED UUID:\n" + uuid + "\nAttempting API call...");
 
                 const response = await apiClient.get(`/api/attendees/ticket/view/${uuid}`);
                 setTicket(response.data);
@@ -93,8 +93,9 @@ export default function AdminTicketScanner() {
 
                     <Box sx={{ textAlign: 'left' }}>
                         <Typography variant="body2" color="text.secondary">Ticket Holder</Typography>
-                        <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>{ticket.user?.name || "Guest"}</Typography>
-
+                        <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
+                            {ticket.user?.full_name || ticket.user?.name || "Guest"}
+                        </Typography>
                         <Typography variant="body2" color="text.secondary">Event ID</Typography>
                         <Typography variant="body1" fontWeight="bold">#{ticket.eventId}</Typography>
                     </Box>
