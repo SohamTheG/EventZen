@@ -78,6 +78,11 @@ public class BookingService {
         return bookingRepo.findByEventHostId(hostId);
     }
 
+    public Booking getBookingById(Long id) {
+        return bookingRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found with id: " + id));
+    }
+
     // ----------------------FOR ADMIN------------------
     public List<Booking> getAllBookingsForAdmin() {
         return bookingRepo.findAll();

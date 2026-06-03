@@ -27,6 +27,18 @@ public class Booking {
     private Long venueId; // Logical ID from your Node.js Service
     private LocalDate eventDate;
 
+    // ALTER TABLE bookings ADD COLUMN total_amount_due DECIMAL(10,2) DEFAULT 0.00;
+
+    private double totalAmountDue = 0.00;
+
+    public double getTotalAmountDue() {
+        return totalAmountDue;
+    }
+
+    public void setTotalAmountDue(double totalAmountDue) {
+        this.totalAmountDue = totalAmountDue;
+    }
+
     public Long getId() {
         return id;
     }
@@ -34,7 +46,7 @@ public class Booking {
     @Override
     public String toString() {
         return "Booking [id=" + id + ", event=" + event + ", venueId=" + venueId + ", eventDate=" + eventDate
-                + ", status=" + status + "]";
+                + ", status=" + status + ", totalAmountDue=" + totalAmountDue + "]";
     }
 
     public void setId(Long id) {

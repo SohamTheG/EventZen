@@ -10,6 +10,7 @@ import BookingApproval from 'pages/admin-dashboard/components/BookingApproval';
 
 import PublicEventsPage from 'pages/public-pages/PublicEventsPage';
 import PublicVenuesPage from 'pages/public-pages/PublicVenuesPage';
+import DigitalTicketView from 'pages/DigitalTicketView';
 const AppRoutes = () => {
     return (
         <Routes>
@@ -23,6 +24,9 @@ const AppRoutes = () => {
 
             <Route path="/events" element={<PublicEventsPage />} />
             <Route path="/venues" element={<PublicVenuesPage />} />
+            <Route path="/ticket/view/:uuid" element={<DigitalTicketView />} />
+
+
             {/* Venue Catalog (from Node.js) */}
             {/* <Route path="/explore-venues" element={<VenueCatalog />} /> */}
             {/* <Route path="/events" element={<EventListPage />} /> */}

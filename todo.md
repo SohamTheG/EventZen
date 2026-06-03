@@ -10,10 +10,10 @@
 ### Phase 2: Core Domain Logic (Data & Constraints)
 
 Before people can buy tickets, the backend needs to know how much things cost and if the venue is even available.
-
+<!-- 
 // TODO 3. **Date Conflict Management:**
 * *The feature:* A venue cannot be booked by two different events on the same day.
-* *The fix:* Update the `bookings` schema and logic in the `events-booking-service` to query existing dates before approving a new booking.
+* *The fix:* Update the `bookings` schema and logic in the `events-booking-service` to query existing dates before approving a new booking. -->
 
 
 // TODO 4. **Costs & Financials:**

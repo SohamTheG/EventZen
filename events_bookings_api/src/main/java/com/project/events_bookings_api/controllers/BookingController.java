@@ -43,6 +43,14 @@ public class BookingController {
         return bookingService.updateStatus(id, BookingStatus.CANCELLED);
     }
 
+    // Get a specific booking by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.getBookingById(id));
+    }
+
+    // ------------------------------------------------------------------------
+
     // ADMIN ONLY ENDPOINTS
     @GetMapping("/admin")
     public ResponseEntity<List<Booking>> getAdminBookings() {

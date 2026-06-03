@@ -18,14 +18,10 @@ public class AttendeeController {
 
     // 2. The specific registration endpoint for the "Attend" button
     @PostMapping("/register")
-    public ResponseEntity<?> registerAttendee(@RequestBody Attendee attendee) {
-        try {
-            Attendee saved = attendeeServices.registerUniqueAttendee(attendee);
-            return ResponseEntity.ok(saved);
-        } catch (RuntimeException e) {
-            // Returns 400 if user is already registered
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Attendee> registerAttendee(@RequestBody Attendee attendee) {
+        // No try-catch needed! If it fails, the GlobalExceptionHandler intercepts it.
+        Attendee saved = attendeeServices.registerUniqueAttendee(attendee);
+        return ResponseEntity.ok(saved);
     }
 
     // 3. Get all attendees for a SPECIFIC event (For Admin Guest List)
@@ -42,5 +38,12 @@ public class AttendeeController {
     @DeleteMapping("/{id}")
     public void deleteAttendee(@PathVariable Long id) {
         attendeeServices.deleteAttendee(id);
+    }
+
+    // PUBLIC ENDPOINT: Scanned by phone cameras to load the digital ticket UI
+    @GetMapping("/ticket/view/{uuid}")
+    public ResponseEntity<Attendee> viewDigitalTicket(@PathVariable String uuid) {
+        Attendee ticketData = attendeeServices.getTicketByUUID(uuid);
+        return ResponseEntity.ok(ticketData);
     }
 }

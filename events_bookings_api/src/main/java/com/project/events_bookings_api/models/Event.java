@@ -12,11 +12,26 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
+    private String description;
+    private Long hostId; // User ID from User Service
+    private boolean isPublic = false;
+
+    // ALTER TABLE events ADD COLUMN ticket_price DECIMAL(10,2) DEFAULT 0.00;
+    private double ticketPrice = 0.00;
+
+    public double getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(double ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
 
     @Override
     public String toString() {
         return "Event [id=" + id + ", name=" + name + ", description=" + description + ", hostId=" + hostId
-                + ", isPublic=" + isPublic + "]";
+                + ", isPublic=" + isPublic + ", ticketPrice=" + ticketPrice + "]";
     }
 
     public Long getId() {
@@ -59,8 +74,4 @@ public class Event {
         this.isPublic = isPublic;
     }
 
-    private String name;
-    private String description;
-    private Long hostId; // User ID from User Service
-    private boolean isPublic = false;
 }
