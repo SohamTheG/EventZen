@@ -6,43 +6,38 @@ import {
 } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // New Icon
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import dayjs from 'dayjs';
 
 export default function PublicEvents() {
     const [events, setEvents] = useState([]);
     const [venueMap, setVenueMap] = useState({});
-    const [userRegistrations, setUserRegistrations] = useState([]); // Track event IDs the user is attending
+    const [userRegistrations, setUserRegistrations] = useState([]);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-    // Add these inside your component:
+    // NEW STATE VARIABLES FOR BOOKING
     const [bookingModalOpen, setBookingModalOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [quantity, setQuantity] = useState(1);
-    const [purchasedTicket, setPurchasedTicket] = useState(null); // To store the QR code response
+    const [purchasedTicket, setPurchasedTicket] = useState(null);
 
     const loadPublicData = async () => {
         const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
         try {
-            // 1. Fetch Venue Names
             const vRes = await apiClient.get('/api/venues');
             const venues = vRes.data;
             const vMap = {};
             venues.forEach(v => vMap[v.id] = v);
             setVenueMap(vMap);
 
-            // 2. Fetch Approved Bookings
             const bRes = await apiClient.get('/api/bookings');
             const allBookings = bRes.data;
             const publicOnly = allBookings.filter(b => b.status === 'APPROVED');
             setEvents(publicOnly);
 
-            // 3. Fetch current user's registrations
             if (loggedInUser) {
                 const aRes = await apiClient.get('/api/attendees/all');
                 const allAttendees = aRes.data;
-                // Filter to find eventIds where this specific user is registered
                 const myEvents = allAttendees
                     .filter(a => a.user?.id === loggedInUser.id)
                     .map(a => a.eventId);
@@ -57,7 +52,16 @@ export default function PublicEvents() {
         loadPublicData();
     }, []);
 
-    const handleAttend = async (eventId) => {
+    // OPEN THE MODAL INSTEAD OF INSTANT BOOKING
+    const handleOpenModal = (eventItem) => {
+        setSelectedEvent(eventItem);
+        setQuantity(1); // Reset counter
+        setPurchasedTicket(null); // Clear old QR codes
+        setBookingModalOpen(true);
+    };
+
+    // THE ACTUAL API CALL (Triggered from inside the modal)
+    const handleAttend = async () => {
         const loggedInUser = JSON.parse(localStorage.getItem('user'));
 
         if (!loggedInUser) {
@@ -65,26 +69,22 @@ export default function PublicEvents() {
             return;
         }
 
-        // 1. UPDATED PAYLOAD: Now includes the quantity state
         const payload = {
-            eventId: eventId,
+            eventId: selectedEvent.id,
             user: { id: loggedInUser.id },
-            quantity: quantity // <-- This tells Java how many tickets to sum up
+            quantity: quantity // Send the selected quantity!
         };
 
         try {
             const response = await apiClient.post('/api/attendees/register', payload);
-
             setSnackbar({ open: true, message: "Registration successful!", severity: 'success' });
 
-            // 2. THE MAGIC: Save the backend response (which includes the Base64 QR code) into state
+            // Save the backend response to display the QR Code
             setPurchasedTicket(response.data);
-
-            // 3. Keep your existing logic to update the UI buttons
-            setUserRegistrations([...userRegistrations, eventId]);
+            setUserRegistrations([...userRegistrations, selectedEvent.id]);
         } catch (err) {
             const errorMsg = err.response?.data?.message || 'You are already registered or server error';
-            setSnackbar({ open: true, message: errorMsg, severity: 'info' });
+            setSnackbar({ open: true, message: errorMsg, severity: 'error' });
         }
     };
 
@@ -94,7 +94,6 @@ export default function PublicEvents() {
 
             <Grid container spacing={3}>
                 {events.length > 0 ? events.map((item) => {
-                    // Check if this specific eventId is in the user's registration list
                     const isAttending = userRegistrations.includes(item.id);
 
                     return (
@@ -125,8 +124,10 @@ export default function PublicEvents() {
                                     </Typography>
                                     <Divider sx={{ my: 1.5 }} />
                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                        <Chip label="Verified Event" size="small" color="success" variant="outlined" />
-                                        <Typography variant="caption" color="text.secondary">Approved</Typography>
+                                        <Typography variant="h6" fontWeight="bold" color="primary">
+                                            ${item.event?.ticketPrice?.toFixed(2) || "0.00"}
+                                        </Typography>
+                                        <Chip label="Verified" size="small" color="success" variant="outlined" />
                                     </Stack>
                                 </CardContent>
 
@@ -135,12 +136,13 @@ export default function PublicEvents() {
                                         fullWidth
                                         variant={isAttending ? "outlined" : "contained"}
                                         color={isAttending ? "success" : "primary"}
-                                        disabled={isAttending} // This makes it unclickable
+                                        disabled={isAttending}
                                         startIcon={isAttending ? <CheckCircleIcon /> : null}
                                         sx={{ borderRadius: 2, fontWeight: 'bold' }}
-                                        onClick={() => handleAttend(item.id)}
+                                        // THIS WAS THE MISSING LINK! 
+                                        onClick={() => handleOpenModal(item)}
                                     >
-                                        {isAttending ? "Attending" : "Attend Event"}
+                                        {isAttending ? "Attending" : "Buy Tickets"}
                                     </Button>
                                 </CardActions>
                             </Card>
@@ -153,26 +155,14 @@ export default function PublicEvents() {
                 )}
             </Grid>
 
-            <Snackbar
-                open={snackbar.open}
-                autoHideDuration={4000}
-                onClose={() => setSnackbar({ ...snackbar, open: false })}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            >
-                <Alert severity={snackbar.severity} sx={{ width: '100%' }} variant="filled">
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
-            {/* The Checkout Modal */}
+            {/* THE CHECKOUT MODAL */}
             <Dialog open={bookingModalOpen} onClose={() => setBookingModalOpen(false)} maxWidth="sm" fullWidth>
                 {purchasedTicket ? (
-                    // SUCCESS STATE: Show the QR Code!
                     <Box sx={{ p: 4, textAlign: 'center' }}>
                         <CheckCircleIcon color="success" sx={{ fontSize: 60, mb: 2 }} />
-                        <Typography variant="h5" fontWeight="bold" gutterBottom>Booking Confirmed!</Typography>
+                        <Typography variant="h5" fontWeight="bold" gutterBottom>Payment Successful!</Typography>
                         <Typography variant="body1" sx={{ mb: 3 }}>You bought {purchasedTicket.quantity} tickets.</Typography>
 
-                        {/* Render the Base64 QR Code directly from the Java backend! */}
                         <Box sx={{ border: '2px dashed #ccc', p: 2, display: 'inline-block', borderRadius: 2 }}>
                             <img
                                 src={`data:image/png;base64,${purchasedTicket.qrCodeBase64}`}
@@ -184,13 +174,12 @@ export default function PublicEvents() {
                         <Typography variant="caption" display="block" sx={{ mt: 2, color: 'text.secondary' }}>
                             Show this QR code at the venue entrance.
                         </Typography>
-                        <Button variant="contained" onClick={() => { setBookingModalOpen(false); setPurchasedTicket(null); }} sx={{ mt: 3 }}>
-                            Close
+                        <Button variant="contained" onClick={() => { setBookingModalOpen(false); setPurchasedTicket(null); loadPublicData(); }} sx={{ mt: 3 }}>
+                            Close Window
                         </Button>
                     </Box>
                 ) : (
-                    // CHECKOUT STATE: Select Quantity
-                    <Box sx={{ p: 3 }}>
+                    <Box sx={{ p: 4 }}>
                         <Typography variant="h5" fontWeight="bold" gutterBottom>
                             Checkout: {selectedEvent?.event?.name}
                         </Typography>
@@ -200,17 +189,17 @@ export default function PublicEvents() {
                             <Typography variant="h6">Number of Tickets</Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                 <Button variant="outlined" onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</Button>
-                                <Typography variant="h6" fontWeight="bold">{quantity}</Typography>
+                                <Typography variant="h6" fontWeight="bold" sx={{ minWidth: '30px', textAlign: 'center' }}>{quantity}</Typography>
                                 <Button variant="outlined" onClick={() => setQuantity(quantity + 1)}>+</Button>
                             </Box>
                         </Box>
 
-                        <Box sx={{ backgroundColor: '#f5f5f5', p: 2, borderRadius: 2, mb: 3 }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <Typography>Ticket Price:</Typography>
+                        <Box sx={{ backgroundColor: '#f8f9fa', p: 3, borderRadius: 2, mb: 4 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                <Typography color="text.secondary">Ticket Price:</Typography>
                                 <Typography>${selectedEvent?.event?.ticketPrice?.toFixed(2) || "0.00"}</Typography>
                             </Box>
-                            <Divider sx={{ my: 1 }} />
+                            <Divider sx={{ my: 2 }} />
                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Typography variant="h6" fontWeight="bold">Total Due:</Typography>
                                 <Typography variant="h6" fontWeight="bold" color="primary">
@@ -219,15 +208,22 @@ export default function PublicEvents() {
                             </Box>
                         </Box>
 
-                        <Button
-                            fullWidth variant="contained" color="primary" size="large"
-                            onClick={() => handleAttend(selectedEvent.id)}
-                        >
+                        <Button fullWidth variant="contained" color="primary" size="large" onClick={handleAttend}>
                             Pay & Generate Ticket
                         </Button>
                     </Box>
                 )}
             </Dialog>
+
+            <Snackbar
+                open={snackbar.open} autoHideDuration={4000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert severity={snackbar.severity} sx={{ width: '100%' }} variant="filled">
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }
