@@ -36,6 +36,11 @@ const xThemeComponents = {
 export default function Dashboard(props) {
   const [selectedView, setSelectedView] = useState('dashboard');
 
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   const renderContent = () => {
     switch (selectedView) {
       case 'venues':
@@ -63,7 +68,7 @@ export default function Dashboard(props) {
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: 'flex' }}>
-        <SideMenu setSelectedView={setSelectedView} currentView={selectedView} />
+        <SideMenu setSelectedView={setSelectedView} currentView={selectedView} mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
         {/* <AppNavbar /> */}
         {/* Main content */}
         <Box
@@ -74,6 +79,7 @@ export default function Dashboard(props) {
               ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
               : alpha(theme.palette.background.default, 1),
             overflow: 'auto',
+            minHeight: '100vh'
           })}
         >
           <Stack
@@ -82,9 +88,15 @@ export default function Dashboard(props) {
               alignItems: 'center',
               mx: 3,
               pb: 5,
-              mt: { xs: 8, md: 0 },
+              mt: { xs: 2, md: 0 },
             }}
           >
+            {/* THE HAMBURGER MENU BUTTON (Only shows on mobile) */}
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, width: '100%', justifyContent: 'flex-start' }}>
+              <IconButton onClick={handleDrawerToggle} sx={{ mr: 2 }}>
+                <MenuIcon fontSize="large" />
+              </IconButton>
+            </Box>
             <Header />
             {/* <MainGrid /> */}
             {renderContent()}

@@ -12,19 +12,29 @@ export default function AdminTicketScanner() {
     const [loading, setLoading] = useState(false);
 
     // The new library passes the raw text directly as the first argument
-    const handleScan = async (text) => {
+    const handleScan = async (result) => {
+        // Safely extract the text, regardless of which version of the library you have
+        const text = result?.[0]?.rawValue || (typeof result === 'string' ? result : null);
+
         if (text && !loading && !ticket) {
             setLoading(true);
             setError('');
 
             try {
+                // Safely extract the UUID from the end of the URL
                 const urlParts = text.split('/');
-                const uuid = urlParts[urlParts.length - 1];
+                const uuid = urlParts.pop(); // Grabs the very last segment
+
+                if (!uuid || uuid.length < 20) {
+                    throw new Error("This is not a valid EventZen QR Code.");
+                }
 
                 const response = await apiClient.get(`/api/attendees/ticket/view/${uuid}`);
                 setTicket(response.data);
             } catch (err) {
-                setError('Invalid, Fake, or Expired Ticket.');
+                // DON'T swallow the error. Print exactly why it failed!
+                const errorMsg = err.response?.data?.message || err.message || 'Network connection failed.';
+                setError(`Scan Failed: ${errorMsg}`);
             } finally {
                 setLoading(false);
             }

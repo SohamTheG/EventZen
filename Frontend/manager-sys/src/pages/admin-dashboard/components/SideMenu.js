@@ -5,6 +5,8 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import SelectContent from './SelectContent';
 import MenuContent from './MenuContent';
 import CardAlert from './CardAlert';
@@ -23,23 +25,29 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
-export default function SideMenu({ setSelectedView, currentView }) {
+export default function SideMenu({ setSelectedView, currentView, mobileOpen, handleDrawerToggle }) {
   // Get real admin data from localStorage
   const user = JSON.parse(localStorage.getItem('user')) || { name: 'Admin', email: '' };
 
-  return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        display: { xs: 'none', md: 'block' },
-        [`& .${drawerClasses.paper}`]: {
-          backgroundColor: 'background.paper',
-        },
-      }}
-    >
+  // Extracted content so we can render it in both the Mobile and Desktop drawers
+  const drawerContent = (
+    <>
+      {/* Mobile Close Button - Only visible on small screens */}
+      <Box sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'flex-end', p: 1 }}>
+        <IconButton onClick={handleDrawerToggle}>
+          <CloseIcon />
+        </IconButton>
+      </Box>
       <Divider />
       <Box sx={{ overflow: 'auto', height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <MenuContent setSelectedView={setSelectedView} currentView={currentView} />
+        <MenuContent
+          currentView={currentView}
+          setSelectedView={(view) => {
+            setSelectedView(view);
+            // Auto-close the mobile menu when a link is clicked
+            if (mobileOpen) handleDrawerToggle();
+          }}
+        />
       </Box>
       <Stack
         direction="row"
@@ -54,7 +62,6 @@ export default function SideMenu({ setSelectedView, currentView }) {
         <Avatar
           sizes="small"
           alt={user.name}
-          // Dynamic avatar based on admin name
           src={`https://ui-avatars.com/api/?name=${user.name}&background=007FFF&color=fff`}
           sx={{ width: 36, height: 36 }}
         />
@@ -66,9 +73,40 @@ export default function SideMenu({ setSelectedView, currentView }) {
             {user.email}
           </Typography>
         </Box>
-        {/* Pass setSelectedView here */}
         <OptionsMenu setSelectedView={setSelectedView} />
       </Stack>
-    </Drawer>
+    </>
+  );
+
+  return (
+    <Box component="nav" sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}>
+
+      {/* 1. MOBILE DRAWER (Temporary, slides in from the left) */}
+      <MuiDrawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{ keepMounted: true }} // Better open performance on mobile
+        sx={{
+          display: { xs: 'block', md: 'none' },
+          [`& .${drawerClasses.paper}`]: { boxSizing: 'border-box', width: drawerWidth },
+        }}
+      >
+        {drawerContent}
+      </MuiDrawer>
+
+      {/* 2. DESKTOP DRAWER (Permanent, always visible) */}
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: 'none', md: 'block' },
+          [`& .${drawerClasses.paper}`]: { backgroundColor: 'background.paper' },
+        }}
+        open
+      >
+        {drawerContent}
+      </Drawer>
+
+    </Box>
   );
 }
