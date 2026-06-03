@@ -52,7 +52,7 @@ export default function Dashboard(props) {
         return <ProfileManagement />
       case 'dashboard':
         return <AdminDashboardComp setSelectedView={setSelectedView} />;
-      case 'Ticket Scanner':
+      case 'ticket scanner':
         return <AdminTicketScanner />;
       default:
         return <AdminDashboardComp setSelectedView={setSelectedView} />; // Default dashboard charts/stats
