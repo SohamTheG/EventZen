@@ -10,22 +10,15 @@ export default function DigitalTicketView() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const baseUrl = process.env.REACT_APP_API_URL || 'http://13.235.77.80:9002';
-
-        fetch(`${baseUrl}/api/attendees/ticket/view/${uuid}`)
+        // Change this to just the relative /api path! Vercel will handle the rest.
+        fetch(`/api/attendees/ticket/view/${uuid}`)
             .then(async (response) => {
-                // 1. Grab the raw text FIRST, no matter what it is
                 const rawText = await response.text();
-
                 try {
-                    // 2. Try to parse it as JSON
                     const data = JSON.parse(rawText);
-
                     if (!response.ok) throw new Error(data.message || 'Error');
                     setTicket(data);
                 } catch (e) {
-                    // 3. IF IT FAILS, IT PRINTS THE HTML TO THE SCREEN!
-                    console.error("Server returned HTML:", rawText);
                     setError(`Server Error: ${rawText.substring(0, 100)}...`);
                 }
             })
