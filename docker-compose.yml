@@ -63,8 +63,13 @@ services:
     #     condition: service_healthy
     environment:
       - PORT=9001
-      # Removed local DB & Redis overrides so it safely uses your .env file!
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${AIVEN_USER}
+      - DB_PASS=${AIVEN_PASS}
       - RABBITMQ_URL=${RABBITMQ_URL}
+      - REDIS_URL=${REDIS_URL}
       # --- 5. FRONTEND ---
       # frontend-app:
       #   build: ./Frontend/manager-sys
