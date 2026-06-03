@@ -26,7 +26,7 @@ apiClient.interceptors.response.use(
         if (error.response?.status === 401) {
             // Handle unauthorized access
             localStorage.removeItem('jwt_token');
-            window.location.href = '/sign-in';
+            window.location.href = '/login';
         }
         return Promise.reject(error);
     }
