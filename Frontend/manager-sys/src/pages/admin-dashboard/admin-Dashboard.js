@@ -8,6 +8,8 @@ import MainGrid from './components/MainGrid';
 import SideMenu from './components/SideMenu';
 import AppTheme from 'shared-theme/AppTheme';
 import React, { useState } from 'react';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
 
 import VenueManagement from './components/VenueManagement'; // We will create this
 import VendorManagement from './components/VendorManagement'; // We will create this
