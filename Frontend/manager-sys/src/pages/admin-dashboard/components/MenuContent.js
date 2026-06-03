@@ -22,6 +22,8 @@ const mainListItems = [
   { text: 'Venues', icon: <FestivalIcon /> },
   { text: 'Vendors', icon: <StorefrontIcon /> },
   { text: 'Event Bookings', icon: <AssignmentRoundedIcon /> },
+  { text: 'Ticket Scanner', icon: <SettingsRoundedIcon /> },
+
 ];
 
 // const secondaryListItems = [
