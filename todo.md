@@ -1,5 +1,5 @@
 
-### Phase 1: The Bedrock (Do This Immediately)
+### Phase 1: The Bedrock (Do This Immediately) status: done
 <!-- 
 1. **Verify & Enforce JWT Auth:** * *Why first?* Everything else relies on identity. You cannot manage attendees, assign host permissions, or book tickets if you don't have a rock-solid, decoded JWT telling the microservices exactly who the user is and what their role is (`ADMIN`, `HOST`, `CUSTOMER`). We need to ensure the API Gateway is properly validating tokens before we build complex logic.
 2. **The "Baseline" Deployment & Persistent Storage:**
@@ -13,10 +13,10 @@ Before people can buy tickets, the backend needs to know how much things cost an
 <!-- 
 // TODO 3. **Date Conflict Management:**
 * *The feature:* A venue cannot be booked by two different events on the same day.
-* *The fix:* Update the `bookings` schema and logic in the `events-booking-service` to query existing dates before approving a new booking. -->
+* *The fix:* Update the `bookings` schema and logic in the `events-booking-service` to query existing dates before approving a new booking. --> status : done
 
 
-// TODO 4. **Costs & Financials:**
+// TODO 4. **Costs & Financials:** status : some fields for costs in venue and event booking and ticket booking were added in db. possibly need addition of more fields as we implement more features.
 * *The feature:* Adding `cost_per_ticket`, venue booking fees, and vendor costs.
 * *The fix:* Schema updates across `venue_service_db` and `events_booking_db`.
 
@@ -26,12 +26,12 @@ Before people can buy tickets, the backend needs to know how much things cost an
 
 Now that dates and money exist, we can let users actually do things.
 
-// TODO 5. **Capacity & Ticket Booking:**
+// TODO 5. **Capacity & Ticket Booking:** status : done
 * *The feature:* Tracking how many tickets are sold vs. the venue's `capacity`.
 * *The fix:* Complex logic. When a user buys a ticket, we must ensure `tickets_sold < venue.capacity`. This might require another RabbitMQ event to keep services synced!
 
 
-// TODO 6. **QR Code Generation:**
+// TODO 6. **QR Code Generation:** Status : done also added ticket scanner on admin side
 * *The feature:* Generating a unique QR code for the ticket.
 * *The fix:* This is an easy add-on to the Ticket Booking flow. Once a ticket is booked in MySQL, a Node.js or Java library generates a QR code string/image and saves it to the `attendees` table.
 

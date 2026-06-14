@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `events` (
   `host_id` bigint DEFAULT NULL,
   `is_public` bit(1) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
+  `ticket_price` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -45,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `bookings` (
   `status` enum('APPROVED','CANCELLED','PENDING','REJECTED') DEFAULT NULL,
   `venue_id` bigint DEFAULT NULL,
   `event_id` bigint DEFAULT NULL,
+  `total_amount_due` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK1ovacgmcqsqj8588kv8xpcqab` (`event_id`),
   CONSTRAINT `FK2ww82bk3npaiyu9oeehwtt2q3` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`)
