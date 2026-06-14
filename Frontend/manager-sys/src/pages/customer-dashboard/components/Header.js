@@ -7,7 +7,7 @@ import ColorModeIconDropdown from 'shared-theme/ColorModeIconDropdown';
 
 import Search from './Search';
 
-export default function Header() {
+export default function Header({ setSearchQuery, setSelectedView }) {
   return (
     <Stack
       direction="row"
@@ -25,7 +25,7 @@ export default function Header() {
       {/* //TODO: maybe try implementing breadcrumb */}
       <NavbarBreadcrumbs />
       <Stack direction="row" sx={{ gap: 1 }}>
-        {/* <Search /> */}
+        <Search setSearchQuery={setSearchQuery} setSelectedView={setSelectedView} />
         {/* <CustomDatePicker /> */}
         {/* <MenuButton showBadge aria-label="Open notifications">
           <NotificationsRoundedIcon />

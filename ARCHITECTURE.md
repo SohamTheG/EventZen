@@ -6,8 +6,12 @@ EventZen is a full-stack, microservice-based Event Management System. It handles
 
 ## 2. Frontend Architecture
 * **Framework:** React 19
-* **UI Library:** Material UI (MUI) with custom theme components (`AppTheme`, `xThemeComponents`).
-* **Layout:** Mobile-responsive utilizing conditional MUI `Drawer` components (slide-in temporary drawer for mobile, permanent side menu for desktop).
+* **UI Library:** Material UI (MUI) with custom theme components (`AppTheme`, `xThemeComponents`). The UI is strictly mobile-first and responsive.
+* **Layout:** Mobile-responsive utilizing conditional MUI `Drawer` components (slide-in temporary drawer for mobile, permanent side menu for desktop). The Customer Dashboard includes dynamic grids for upcoming events and venues.
+* **Features:** 
+  * **Event Calendar:** Implemented using `@mui/x-date-pickers` for visualizing approved events in a Google Calendar-like view.
+  * **Global Search:** Simple text-based frontend search (`SearchResults.js`) that filters venues and events dynamically without relying on ML backends.
+  * **Host Attendee Management:** Hosts can manage attendees via a dedicated dashboard view. Authorization relies on backend dynamic DB checks mapping the `host_id` of the event rather than a static `HOST` role string.
 * **Routing:** separate file for routing in between pages. once sign in as customer or admin, the components are rendered based on items clicked on sidemenu.
 * **State & Networking:** Custom `apiClient` (Axios) with HTTP interceptors automatically attaching `Bearer` JWT tokens from `localStorage`. Optional chaining is enforced for error handling to prevent UI crashes.
 * **Integrations:** `@yudiel/react-qr-scanner` for native, browser-based mobile QR scanning.
@@ -17,7 +21,7 @@ EventZen is a full-stack, microservice-based Event Management System. It handles
 The backend enforces a microservice architecture behind an API Gateway, with services running in Docker containers on a single AWS EC2 instance (`13.235.77.80`).
 
 * **API Gateway:** Sits between the React frontend and the microservices, handling route resolution, centralized CORS configuration, and initial JWT token validation (allowing `OPTIONS` preflight requests through without tokens) before forwarding requests to the internal ports.
-* **User & Event Service (Java / Spring Boot - Port 9002):** Handles authentication, attendee management, role-based access control (RBAC: `ADMIN`, `HOST`, `CUSTOMER`), and secure ticket viewing (`/api/attendees/ticket/view/{uuid}`).
+* **User & Event Service (Java / Spring Boot - Port 9002):** Handles authentication, attendee management, and secure ticket viewing (`/api/attendees/ticket/view/{uuid}`). Role-Based Access Control (RBAC) allows `ADMIN` full access, while `HOST` access is evaluated dynamically by querying the booking DB to verify ownership (`userId == hostId`).
 * **Venue & Vendor Service (Node.js - Port 9001):** Handles CRUD operations for venues, vendors, and the junction mappings between them.
 
 ## 4. Cloud Infrastructure & Integrations
@@ -66,9 +70,7 @@ The system relies on strict environment variable configuration across environmen
 * Backend `.env` requires credentials for Aiven MySQL, Upstash Redis, CloudAMQP, and JWT Secret Keys.
 
 ## 8. Roadmap & Pending Features (Do Not Implement Yet)
-* **Interactive Event Calendar:** Frontend UI integration pulling secured dates into `react-big-calendar`.
-* **making ui mobile friendly:** Frontend UI should look good for mobile devices as well as websites.
-* **Host Attendee Management:** Frontend dashboard allowing Event Hosts to manage their specific attendees based on RBAC.
-* **ML-Based Search:** Future integration of Elasticsearch or vector search for events/venues once data volume increases.
+* **Real-time Notifications:** WebSocket integration for booking updates.
+* **Payment Gateway Integration:** Integrating Stripe or Razorpay for actual ticket processing.
 
 ```

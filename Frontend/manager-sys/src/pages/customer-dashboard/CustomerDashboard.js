@@ -14,6 +14,10 @@ import MyBookings from './components/MyBookings';
 import PublicEvents from './components/PublicEvents';
 import CustomerDashboardComp from './components/CustomerDashboardComp';
 import ProfileManagement from './components/ProfileManagement';
+import EventCalendar from './components/EventCalendar';
+import HostAttendees from './components/HostAttendees';
+
+import SearchResults from './components/SearchResults';
 
 // Inside CustomerDashboard Component
 
@@ -35,6 +39,7 @@ const xThemeComponents = {
 
 export default function Dashboard(props) {
   const [selectedView, setSelectedView] = useState('dashboard');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const renderContent = () => {
     switch (selectedView) {
@@ -48,6 +53,12 @@ export default function Dashboard(props) {
         return <PublicEvents />;
       case 'profile':
         return <ProfileManagement />;
+      case 'calendar':
+        return <EventCalendar />;
+      case 'search':
+        return <SearchResults query={searchQuery} />;
+      case 'manage attendees':
+        return <HostAttendees />;
       default:
         // Fallback in case state is null or unexpected
         return <CustomerDashboardComp setSelectedView={setSelectedView} />;
@@ -80,7 +91,7 @@ export default function Dashboard(props) {
               mt: { xs: 8, md: 0 },
             }}
           >
-            <Header />
+            <Header setSearchQuery={setSearchQuery} setSelectedView={setSelectedView} />
             {/* <MainGrid /> */}
             {renderContent()}
           </Stack>

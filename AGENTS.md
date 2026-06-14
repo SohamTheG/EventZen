@@ -19,6 +19,7 @@ You are an expert Full-Stack Engineer. Your goal is to write clean, production-r
     * Node.js runs on `9001`.
 * **Caching:** When querying high-frequency read data (like Venue lists), check the Redis cache first before querying the Aiven MySQL database. Ensure cache invalidation logic is included during PUT/POST/DELETE requests.
 * **CORS Management:** CORS is handled CENTRALLY by the API Gateway. You must explicitly disable CORS in all downstream microservices (e.g., Spring Security configs, Node/Express apps) to prevent duplicate `Access-Control-Allow-Origin` headers.
+* **Role-Based Access Control (RBAC):** Always use case-insensitive checks or dynamic database checks for roles. For example, verify `hostId` matches user ID rather than expecting a strict `HOST` string in the JWT, as native roles are often just `USER` or `ADMIN`.
 
 ## 4. Hardware & Library Constraints
 * **QR Scanning:** The frontend uses `@yudiel/react-qr-scanner`. You MUST use the `onScan` prop to capture data. Do not use `onResult`, and do not revert to older, deprecated libraries like `react-qr-reader`.
@@ -28,3 +29,12 @@ Before finalizing a task involving deployments, you must check the following:
 * Verify no `http://localhost` hardcodes exist in the frontend; it must use dynamic environments (`.env.development` for local API Gateway, and `.env.production` for EC2/Vercel).
 * When modifying frontend `.env` files, remind the developer to restart the `npm start` server to pick up the environment changes.
 * If a new package is added to the React app, ensure both `package.json` and `package-lock.json` are committed so Vercel can build it.
+
+ENV: Windows.
+Always use 'cmd /c' for all shell executions to ensure the process terminates
+correctly and sends an EOF signal.
+
+Example: Use 'cmd /c pip list' instead of just 'pip list'.
+
+Avoid interactive shells. If a persistent session is needed, use 'cmd /k'
+but ensure the command is self-terminating.

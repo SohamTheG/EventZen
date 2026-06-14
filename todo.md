@@ -16,7 +16,7 @@ Before people can buy tickets, the backend needs to know how much things cost an
 * *The fix:* Update the `bookings` schema and logic in the `events-booking-service` to query existing dates before approving a new booking. --> status : done
 
 
-// TODO 4. **Costs & Financials:** status : some fields for costs in venue and event booking and ticket booking were added in db. possibly need addition of more fields as we implement more features.
+// TODO 4. **Costs & Financials:** status : done
 * *The feature:* Adding `cost_per_ticket`, venue booking fees, and vendor costs.
 * *The fix:* Schema updates across `venue_service_db` and `events_booking_db`.
 
@@ -37,30 +37,30 @@ Now that dates and money exist, we can let users actually do things.
 
 
 
-### Phase 4: The UI/UX Overhaul
+### Phase 4: The UI/UX Overhaul & Core Capabilities
 
-With the backend fully powered up, we expose it beautifully to the frontend.
+With the backend fully powered up, we expose it beautifully to the frontend and add basic searching.
 
 // TODO 7. **User Dashboard Redesign:**
 * *The feature:* Changing the landing page to show current events and venues rather than empty stats.
+* *The fix:* High-impact UI updates on the frontend to display dynamic lists/grids using existing backend endpoints.
 
 
 // TODO 8. **Interactive Event Calendar:**
-* *The feature:* A Google Calendar-style UI component.
-* *The fix:* The frontend will pull dates from the backend (which we secured in Phase 2) and map them to a React calendar library like `react-big-calendar`.
+* *The feature:* A Google Calendar-style UI component allowing users to see all events at a glance.
+* *The fix:* Use `@mui/x-date-pickers` in the frontend, styled to resemble Google Calendar, fetching dates from the backend.
 
 
 // TODO 9. **Host Attendee Management:**
 * *The feature:* Allowing an Event Host to manipulate their specific event's attendees.
-* *The fix:* Role-Based Access Control (RBAC) tied directly to the JWT we secured in Phase 1.
-
+* *The fix:* Role-Based Access Control (RBAC) tied directly to the JWT. Add new endpoints to the Event Service (Port 9002) for hosts.
 
 
 ### Phase 5: The "Boss Level"
 
-// TODO 10. **ML-Based Search:**
-* *The feature:* Smart searching for events/venues.
-* *Why last?* Machine Learning requires data. Until your deployed app has actual venues, events, and attendees sitting in a persistent database, an ML model has nothing to train on or search through. We will implement something like Elasticsearch or a lightweight vector search when the app is mature.
+// TODO 10. **Simple Text-Based Search:**
+* *The feature:* Global search functionality for events and venues.
+* *The fix:* A simple word search implemented on the frontend with a global search bar, filtering through the fetched events and venues. We will skip complex ML/Elasticsearch infrastructure to maintain an easy deployment path.
 
 
 
