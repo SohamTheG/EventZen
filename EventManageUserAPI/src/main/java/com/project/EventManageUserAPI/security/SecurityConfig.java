@@ -19,7 +19,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults()) // 1. Tell Spring to use the CORS settings below
+                .cors(cors -> cors.disable()) // 1. Disabled because API Gateway handles CORS
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for development
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() // Allow register/login
@@ -35,7 +35,8 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 2. Define the exact VIP list for Spring Security
+    // 2. Define the exact VIP list for Spring Security (Commented out because Gateway handles it)
+    /*
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -49,4 +50,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+    */
 }

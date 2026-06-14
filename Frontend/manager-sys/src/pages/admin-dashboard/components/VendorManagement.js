@@ -10,7 +10,7 @@ export default function VendorManagement() {
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [currentId, setCurrentId] = useState(null);
-    const [formData, setFormData] = useState({ name: '', type: '' });
+    const [formData, setFormData] = useState({ name: '', type: '', service_fee: '' });
 
     // 1. FETCH: Get all vendors
     const fetchVendors = async () => {
@@ -28,7 +28,7 @@ export default function VendorManagement() {
     // Open Dialog for Adding
     const handleOpenAdd = () => {
         setIsEdit(false);
-        setFormData({ name: '', type: '' });
+        setFormData({ name: '', type: '', service_fee: '' });
         setOpen(true);
     };
 
@@ -36,7 +36,7 @@ export default function VendorManagement() {
     const handleOpenEdit = (vendor) => {
         setIsEdit(true);
         setCurrentId(vendor.id);
-        setFormData({ name: vendor.name, type: vendor.type });
+        setFormData({ name: vendor.name, type: vendor.type, service_fee: vendor.service_fee || '' });
         setOpen(true);
     };
 
@@ -77,6 +77,7 @@ export default function VendorManagement() {
         { field: 'id', headerName: 'ID', width: 70 },
         { field: 'name', headerName: 'Vendor Name', width: 250 },
         { field: 'type', headerName: 'Service Type', width: 180 },
+        { field: 'service_fee', headerName: 'Service Fee ($)', width: 150 },
         {
             field: 'actions',
             headerName: 'Actions',
@@ -148,6 +149,14 @@ export default function VendorManagement() {
                             </MenuItem>
                         ))}
                     </TextField>
+                    <TextField
+                        fullWidth
+                        label="Service Fee ($)"
+                        type="number"
+                        margin="normal"
+                        value={formData.service_fee}
+                        onChange={(e) => setFormData({ ...formData, service_fee: e.target.value })}
+                    />
                 </DialogContent>
                 <DialogActions sx={{ p: 3 }}>
                     <Button onClick={() => setOpen(false)}>Cancel</Button>

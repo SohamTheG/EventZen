@@ -1,18 +1,71 @@
 -----userattendeesdb-----------
 # Table, Create Table
-'users', 'CREATE TABLE `users` (\n  `id` bigint NOT NULL AUTO_INCREMENT,\n  `email` varchar(255) NOT NULL,\n  `password` varchar(255) DEFAULT NULL,\n  `name` varchar(255) DEFAULT NULL,\n  `role` varchar(255) DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci'
+-- userattendeesdb.users definition
+
+CREATE TABLE "users" (
+  "id" bigint NOT NULL AUTO_INCREMENT,
+  "email" varchar(255) NOT NULL,
+  "name" varchar(255) DEFAULT NULL,
+  "password" varchar(255) NOT NULL,
+  "role" varchar(255) DEFAULT NULL,
+  PRIMARY KEY ("id"),
+  UNIQUE KEY "UK6dotkott2kjsp8vw4d0m25fb7" ("email")
+);
+
 # Table, Create Table
-'attendees', 'CREATE TABLE `attendees` (\n  `id` bigint NOT NULL AUTO_INCREMENT,\n  `user_id` bigint DEFAULT NULL,\n  `event_id` int NOT NULL,\n  `status` varchar(255) DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  KEY `FK1esxmgs8d1wyypehbhbijyrkd` (`user_id`),\n  CONSTRAINT `FK1esxmgs8d1wyypehbhbijyrkd` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci'
+-- userattendeesdb.attendees definition
+
+CREATE TABLE "attendees" (
+  "id" bigint NOT NULL AUTO_INCREMENT,
+  "event_id" int DEFAULT NULL,
+  "status" varchar(255) DEFAULT NULL,
+  "user_id" bigint DEFAULT NULL,
+  "qr_code_base64" text,
+  "quantity" int NOT NULL DEFAULT '1',
+  "ticket_identifier" varchar(255) DEFAULT NULL,
+  PRIMARY KEY ("id"),
+  UNIQUE KEY "UKqu2e55m196v24eh3cpwjd69pw" ("ticket_identifier"),
+  KEY "FK1esxmgs8d1wyypehbhbijyrkd" ("user_id"),
+  CONSTRAINT "FK1esxmgs8d1wyypehbhbijyrkd" FOREIGN KEY ("user_id") REFERENCES "users" ("id")
+);
 --------------------
 ------------events_booking_db------------
 # Table, Create Table
-'bookings', 'CREATE TABLE `bookings` (\n  `id` bigint NOT NULL AUTO_INCREMENT,\n  `event_date` date DEFAULT NULL,\n  `status` enum(\'APPROVED\',\'CANCELLED\',\'PENDING\',\'REJECTED\') DEFAULT NULL,\n  `venue_id` bigint DEFAULT NULL,\n  `event_id` bigint DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `UK1ovacgmcqsqj8588kv8xpcqab` (`event_id`),\n  CONSTRAINT `FK2ww82bk3npaiyu9oeehwtt2q3` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci'
+CREATE TABLE "bookings" (
+  "id" bigint NOT NULL AUTO_INCREMENT,
+  "event_date" date DEFAULT NULL,
+  "status" enum('APPROVED','CANCELLED','PENDING','REJECTED') DEFAULT NULL,
+  "venue_id" bigint DEFAULT NULL,
+  "event_id" bigint DEFAULT NULL,
+  "total_amount_due" double NOT NULL,
+  PRIMARY KEY ("id"),
+  UNIQUE KEY "UK1ovacgmcqsqj8588kv8xpcqab" ("event_id"),
+  CONSTRAINT "FK2ww82bk3npaiyu9oeehwtt2q3" FOREIGN KEY ("event_id") REFERENCES "events" ("id")
+);
 # Table, Create Table
-'events', 'CREATE TABLE `events` (\n  `id` bigint NOT NULL AUTO_INCREMENT,\n  `description` varchar(255) DEFAULT NULL,\n  `host_id` bigint DEFAULT NULL,\n  `is_public` bit(1) NOT NULL,\n  `name` varchar(255) DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci'
------------------------------------------
+-- events_booking_db.events definition
+
+CREATE TABLE "events" (
+  "id" bigint NOT NULL AUTO_INCREMENT,
+  "description" varchar(255) DEFAULT NULL,
+  "host_id" bigint DEFAULT NULL,
+  "is_public" bit(1) NOT NULL,
+  "name" varchar(255) DEFAULT NULL,
+  "ticket_price" double NOT NULL,
+  PRIMARY KEY ("id")
+);-----------------------------------------
 -------------Venue_service_db------------
 # Table, Create Table
-'vendors', 'CREATE TABLE `vendors` (\n  `id` bigint NOT NULL AUTO_INCREMENT,\n  `name` varchar(255) NOT NULL,\n  `type` varchar(255) NOT NULL,\n  `createdAt` datetime NOT NULL,\n  `updatedAt` datetime NOT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci'
+CREATE TABLE "Vendors" (
+  "id" bigint NOT NULL AUTO_INCREMENT,
+  "name" varchar(255) NOT NULL,
+  "type" varchar(255) NOT NULL,
+  "createdAt" datetime NOT NULL,
+  "updatedAt" datetime NOT NULL,
+  "service_fee" decimal(10,2) DEFAULT '0.00',
+  PRIMARY KEY ("id")
+);
+
 # Table, Create Table
 -- venue_service_db.Venues definition
 
@@ -29,67 +82,77 @@ CREATE TABLE "Venues" (
 );
 
 # Table, Create Table
-'venuevendors', 'CREATE TABLE `venuevendors` (\n  `createdAt` datetime NOT NULL,\n  `updatedAt` datetime NOT NULL,\n  `VenueId` bigint NOT NULL,\n  `VendorId` bigint NOT NULL,\n  PRIMARY KEY (`VenueId`,`VendorId`),\n  KEY `VendorId` (`VendorId`),\n  CONSTRAINT `venuevendors_ibfk_1` FOREIGN KEY (`VenueId`) REFERENCES `venues` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,\n  CONSTRAINT `venuevendors_ibfk_2` FOREIGN KEY (`VendorId`) REFERENCES `vendors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci'
--------------------------------------------
-dbml for dbdiagram.io
-// --- USER & ATTENDEE SERVICE ---
-
+CREATE TABLE "VenueVendors" (
+  "createdAt" datetime NOT NULL,
+  "updatedAt" datetime NOT NULL,
+  "VenueId" bigint NOT NULL,
+  "VendorId" bigint NOT NULL,
+  PRIMARY KEY ("VenueId","VendorId"),
+  KEY "VendorId" ("VendorId"),
+  CONSTRAINT "VenueVendors_ibfk_1" FOREIGN KEY ("VenueId") REFERENCES "Venues" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT "VenueVendors_ibfk_2" FOREIGN KEY ("VendorId") REFERENCES "Vendors" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);-------------------------------------------
+// --------dbml for dbdiagram.io ------------
+//need to write updated dbml for above schema
 Table users {
-  id bigint [primary key, increment]
-  email varchar [not null]
+  id int [pk, increment]
+  email varchar [unique]
   password varchar
   name varchar
   role varchar
 }
 
 Table attendees {
-  id bigint [primary key, increment]
-  user_id bigint
-  event_id int [not null]
+  id int [pk, increment]
+  user_id int [ref: - users.id]
+  event_id int
   status varchar
+  qr_code_base64 string
+  quantity int
+  ticket_identifier string [unique]
 }
 
-// --- EVENTS & BOOKING SERVICE ---
-
 Table events {
-  id bigint [primary key, increment]
+  id int [pk, increment]
   name varchar
   description varchar
-  host_id bigint
-  is_public bit [not null]
+  host_id int [ref: - users.id]
+  is_public bit
+  ticket_price decimal
 }
 
 Table bookings {
-  id bigint [primary key, increment]
+  id int [pk, increment]
   event_date date
-  status enum // 'APPROVED', 'CANCELLED', 'PENDING', 'REJECTED'
-  venue_id bigint
-  event_id bigint [unique]
+  status enum [APPROVED, CANCELLED, PENDING, REJECTED]
+  venue_id int [ref: - venues.id]
+  event_id int [unique, ref: - events.id]
+  total_amount_due decimal
 }
 
-// --- VENUE SERVICE ---
-
-Table venues {
-  id bigint [primary key, increment]
-  name varchar [not null]
-  location varchar [not null]
+Table Venues {
+  id int [pk, increment]
+  name varchar
+  location varchar
   capacity int
   price_per_day decimal
+  is_available bit
   createdAt datetime
   updatedAt datetime
 }
 
-Table vendors {
-  id bigint [primary key, increment]
-  name varchar [not null]
-  type varchar [not null]
+Table Vendors {
+  id int [pk, increment]
+  name varchar
+  type varchar
   createdAt datetime
   updatedAt datetime
+  service_fee decimal
 }
 
-Table venuevendors {
-  VenueId bigint [not null]
-  VendorId bigint [not null]
+Table VenueVendors {
+  VenueId int [ref: - Venues.id]
+  VendorId int [ref: - Vendors.id]
   createdAt datetime
   updatedAt datetime
   
@@ -97,7 +160,6 @@ Table venuevendors {
     (VenueId, VendorId) [pk]
   }
 }
-
 // --- RELATIONSHIPS (Internal) ---
 
 Ref: users.id < attendees.user_id // one-to-many

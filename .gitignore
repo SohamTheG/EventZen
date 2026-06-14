@@ -18,3 +18,4 @@ target/
 
 #env files
 .env
+docker-compose.override.yml

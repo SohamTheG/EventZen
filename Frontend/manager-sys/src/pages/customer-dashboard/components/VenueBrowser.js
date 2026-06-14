@@ -27,6 +27,7 @@ export default function VenueBrowser() {
         eventName: '',
         eventDescription: '',
         eventDate: dayjs().add(7, 'day'), // Default to a week from now
+        ticketPrice: '',
     });
 
     const handleOpenBooking = (venue) => {
@@ -37,15 +38,21 @@ export default function VenueBrowser() {
     const handleConfirmBooking = async () => {
         const user = JSON.parse(localStorage.getItem('user'));
 
+        const venueCost = parseFloat(selectedVenue.price_per_day) || 0;
+        const vendorsCost = (selectedVenue.Vendors || []).reduce((acc, vendor) => acc + (parseFloat(vendor.service_fee) || 0), 0);
+        const totalAmountDue = venueCost + vendorsCost;
+
         // The structure matches your Spring Boot Booking/Event entities
         const payload = {
             eventDate: bookingData.eventDate.format('YYYY-MM-DD'),
             venueId: selectedVenue.id,
             status: "PENDING",
+            totalAmountDue: totalAmountDue,
             event: {
                 name: bookingData.eventName,
                 description: bookingData.eventDescription,
-                hostId: user.id // Linking the logged-in user
+                hostId: user.id, // Linking the logged-in user
+                ticketPrice: parseFloat(bookingData.ticketPrice) || 0
             }
         };
 
@@ -193,6 +200,38 @@ export default function VenueBrowser() {
                                 onChange={(newValue) => setBookingData({ ...bookingData, eventDate: newValue })}
                                 disablePast
                             />
+                            <TextField
+                                fullWidth
+                                label="Ticket Price for Attendees ($)"
+                                type="number"
+                                placeholder="0 if free event"
+                                onChange={(e) => setBookingData({ ...bookingData, ticketPrice: e.target.value })}
+                            />
+                            {selectedVenue && (
+                                <Box sx={{ p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
+                                    <Typography variant="subtitle2" fontWeight="bold">Estimated Cost Breakdown:</Typography>
+                                    <Typography variant="body2" display="flex" justifyContent="space-between">
+                                        <span>Venue ({selectedVenue.name}):</span>
+                                        <span>${parseFloat(selectedVenue.price_per_day || 0).toFixed(2)}</span>
+                                    </Typography>
+                                    {(selectedVenue.Vendors || []).map(vendor => (
+                                        <Typography key={vendor.id} variant="body2" display="flex" justifyContent="space-between" color="text.secondary">
+                                            <span>Service: {vendor.name} ({vendor.type}):</span>
+                                            <span>${parseFloat(vendor.service_fee || 0).toFixed(2)}</span>
+                                        </Typography>
+                                    ))}
+                                    <Divider sx={{ my: 1 }} />
+                                    <Typography variant="subtitle1" fontWeight="bold" display="flex" justifyContent="space-between">
+                                        <span>Total Amount Due:</span>
+                                        <span>
+                                            ${(
+                                                parseFloat(selectedVenue.price_per_day || 0) + 
+                                                (selectedVenue.Vendors || []).reduce((acc, v) => acc + parseFloat(v.service_fee || 0), 0)
+                                            ).toFixed(2)}
+                                        </span>
+                                    </Typography>
+                                </Box>
+                            )}
                             <Typography variant="caption" color="text.secondary">
                                 Note: A request will be sent to the Admin. You will be notified once approved.
                             </Typography>
