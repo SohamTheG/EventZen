@@ -1,0 +1,13 @@
+config:
+  target: "http://localhost:8080" 
+  phases:
+    - duration: 60           
+      arrivalRate: 5         # Start slow (5 per sec)
+      rampTo: 50             # Gently ramp to 50 per sec
+      name: "Local Ramp Up"
+  
+scenarios:
+  - name: "Redis Cache Test - Venue Catalog"
+    flow:
+      - get:
+          url: "/api/venues"

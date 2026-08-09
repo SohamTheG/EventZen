@@ -27,7 +27,7 @@ public class GatewayRoutingConfig {
     public RouterFunction<ServerResponse> venueVendorRoute() {
         return route("venue-vendor-service")
                 .route(path("/api/venues/**").or(path("/api/vendors/**")), http())
-                .before(uri("http://venue-vendor-service:9001"))
+                .before(uri("http://venue-vendor-api:9001"))
                 .build();
     }
 

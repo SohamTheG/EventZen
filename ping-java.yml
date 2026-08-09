@@ -1,0 +1,13 @@
+config:
+  target: "http://localhost:9000" # Hitting Java DIRECTLY to prove it is isolated
+  phases:
+    - duration: 60
+      arrivalRate: 2 # A slow, steady stream of login attempts
+scenarios:
+  - name: "Testing Java IAM Availability"
+    flow:
+      - post:
+          url: "/auth/login" # Java route
+          json:
+            email: "nonexistent@test.com" # We just want a 401 Unauthorized, not a timeout!
+            password: "wrongpassword"

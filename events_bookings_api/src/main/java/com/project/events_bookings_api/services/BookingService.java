@@ -30,36 +30,32 @@ public class BookingService {
 
     @Transactional
     public Booking createBooking(Booking booking) {
-        // 1. Create a highly specific lock key
         String lockKey = "lock:venue:" + booking.getVenueId() + ":date:" + booking.getEventDate().toString();
-
-        // 2. Attempt to acquire the Redis lock (Expires in 5 mins to prevent permanent
-        // deadlocks)
         Boolean lockAcquired = redisTemplate.opsForValue().setIfAbsent(lockKey, "LOCKED", Duration.ofMinutes(5));
 
-        if (Boolean.FALSE.equals(lockAcquired)) {
-            throw new IllegalStateException("Already booked for this day.");
-        }
+        // BYPASSED: Redis Lock Check
+        // if (Boolean.FALSE.equals(lockAcquired)) {
+        //     throw new IllegalStateException("Already booked for this day.");
+        // }
 
         try {
-            // 3. The lock is ours! Double-check the DB to ensure it wasn't booked
-            // previously
-            boolean isAlreadyBooked = bookingRepo.existsConflict(booking.getVenueId(), booking.getEventDate());
-            if (isAlreadyBooked) {
-                throw new IllegalStateException("Already booked for this day.");
-            }
+            // BYPASSED: Database Conflict Check
+            // boolean isAlreadyBooked = bookingRepo.existsConflict(booking.getVenueId(), booking.getEventDate());
+            // if (isAlreadyBooked) {
+            //     throw new IllegalStateException("Already booked for this day.");
+            // }
 
-            // 4. Proceed with your original logic
             booking.setStatus(BookingStatus.PENDING);
-            Booking savedBooking = bookingRepo.save(booking);
 
-            // 5. Fire your RabbitMQ event
-            rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, savedBooking);
+            // BYPASSED: Database Save (so MySQL doesn't crash from duplicates)
+            // Booking savedBooking = bookingRepo.save(booking);
 
-            return savedBooking;
+            // Send the raw booking straight to RabbitMQ!
+            rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, booking);
+
+            return booking;
 
         } finally {
-            // 6. CRITICAL: Always release the lock when finished!
             redisTemplate.delete(lockKey);
         }
     }

@@ -1,0 +1,24 @@
+config:
+  target: "http://localhost:8080" # Hitting the API Gateway
+  phases:
+    - duration: 50          # A short, intense 10-second burst!
+      arrivalRate: 20     # 2,000 users all clicking "Book Now" at exactly the same time!
+      name: "Massive Booking Spike"
+  
+scenarios:
+  - name: "RabbitMQ Resilience Test - Booking Spike"
+    flow:
+      - post:
+          url: "/api/bookings"
+          headers:
+            # 🚨 IMPORTANT: You MUST paste a valid JWT token here or the Gateway will block it!
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2hhbWcyazNAZ21haWwuY29tIiwidXNlcklkIjoyLCJyb2xlIjoidXNlciIsImlhdCI6MTc4MjQxMTMyNiwiZXhwIjoxNzgyNDk3NzI2fQ.TcVhT2C9vSnfSQit-8rYGDkzN5w1BtEHpXpTWlsahro"
+            Content-Type: "application/json"
+          json:
+            venueId: 1
+            eventDate: "2026-12-31"
+            totalAmountDue: 5000.00
+            event: 
+              name: "Artillery Load Test Event"
+              description: "A massive event to test RabbitMQ"
+              hostId: 1

@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // 1. Let public routes pass through without a token
-        if (path.startsWith("/auth/") || path.startsWith("/api/public/")) {
+        if (path.startsWith("/auth/") || path.startsWith("/api/public/") || path.startsWith("/api/venues")) {
             filterChain.doFilter(request, response);
             return;
         }

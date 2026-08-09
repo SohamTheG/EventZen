@@ -1,0 +1,105 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Comprehensive System Load Analysis</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #1e1e2f; color: #ffffff; padding: 40px; margin: 0; }
+            .chart-wrapper { background: #27293d; padding: 30px; border-radius: 12px; box-shadow: 0px 10px 30px rgba(0,0,0,0.5); max-width: 1200px; margin: auto; }
+            h1 { text-align: center; color: #e1e1e1; font-weight: 300; margin-bottom: 5px; }
+            p.subtitle { text-align: center; color: #9a9a9a; margin-bottom: 30px; }
+        </style>
+    </head>
+    <body>
+        <div class="chart-wrapper">
+            <h1>Scenario 3: Asynchronous Ingestion Telemetry</h1>
+            <p class="subtitle">Concurrent Traffic vs. System Latency (RabbitMQ Resilience)</p>
+            <canvas id="complexChart"></canvas>
+        </div>
+        <script>
+            const ctx = document.getElementById('complexChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['T + 0s', 'T + 10s', 'T + 20s', 'T + 30s', 'T + 40s', 'T + 50s'],
+                    datasets: [
+                        {
+                            type: 'line',
+                            label: 'P99 Latency (ms)',
+                            data: [0, 7557.1, 50.9, 70.1, 43.4, 25.8],
+                            borderColor: '#ff6384',
+                            backgroundColor: '#ff6384',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            yAxisID: 'y-latency'
+                        },
+                        {
+                            type: 'line',
+                            label: 'P95 Latency (ms)',
+                            data: [0, 6838, 36.2, 34.1, 26.8, 22],
+                            borderColor: '#ffce56',
+                            backgroundColor: '#ffce56',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            yAxisID: 'y-latency'
+                        },
+                        {
+                            type: 'line',
+                            label: 'Median Latency (p50 ms)',
+                            data: [0, 165.7, 19.1, 19.9, 13.9, 16],
+                            borderColor: '#4bc0c0',
+                            backgroundColor: '#4bc0c0',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            yAxisID: 'y-latency'
+                        },
+                        {
+                            type: 'bar',
+                            label: 'Incoming Requests',
+                            data: [118, 200, 200, 200, 200, 82],
+                            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                            yAxisID: 'y-throughput'
+                        },
+                        {
+                            type: 'bar',
+                            label: 'Successful Responses (200 OK)',
+                            data: [0, 318, 200, 200, 200, 82],
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            yAxisID: 'y-throughput'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleFont: {size: 14}, bodyFont: {size: 13}, padding: 12 },
+                        legend: { labels: { color: '#e1e1e1', font: {size: 13} } }
+                    },
+                    scales: {
+                        x: { 
+                            ticks: { color: '#9a9a9a' },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        },
+                        'y-latency': {
+                            type: 'linear',
+                            position: 'left',
+                            title: { display: true, text: 'Latency (Milliseconds)', color: '#ffce56' },
+                            ticks: { color: '#9a9a9a' },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        },
+                        'y-throughput': {
+                            type: 'linear',
+                            position: 'right',
+                            title: { display: true, text: 'Throughput (Count)', color: '#36a2eb' },
+                            ticks: { color: '#9a9a9a' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        </script>
+    </body>
+    </html>
+    

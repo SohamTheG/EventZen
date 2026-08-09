@@ -113,10 +113,10 @@ router.get('/', async (req, res) => {
         const cacheKey = 'venues:all';
         const cachedVenues = await redisClient.get(cacheKey);
 
-        if (cachedVenues) {
-            console.log('Cache Hit: Returning venues from Redis');
-            return res.json(JSON.parse(cachedVenues));
-        }
+        // if (cachedVenues) {
+        //     console.log('Cache Hit: Returning venues from Redis');
+        //     return res.json(JSON.parse(cachedVenues));
+        // }
 
         console.log('Cache Miss: Fetching venues from Database');
         const venues = await Venue.findAll({

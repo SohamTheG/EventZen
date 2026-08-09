@@ -27,6 +27,11 @@ services:
     # depends_on:
     #   mysql-db:
     #     condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5' # Limits to exactly half a CPU core
+          memory: 512M # Limits to 512MB RAM (Like an AWS t2.micro)
     environment:
       - SERVER_PORT=9000
       - DB_USER=${AIVEN_USER} # Docker grabs this from the .env file
@@ -54,10 +59,15 @@ services:
       # --- 4. NODE.JS API ---
   venue-vendor-api:
     build: ./VenueAndVendorAPI
-    container_name: venue-vendor-service
+    # container_name: venue-vendor-service
     restart: on-failure
     ports:
-      - "9001:9001" # Updated port
+      - "9001-9005:9001" # Updated port
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5' # Limits to exactly half a CPU core
+          memory: 512M # Limits to 512MB RAM (Like an AWS t2.micro)
     # depends_on:
     #   mysql-db:
     #     condition: service_healthy

@@ -1,0 +1,10 @@
+config:
+  target: "http://localhost:9001" # Hitting Node.js DIRECTLY to bypass Gateway bottleneck
+  phases:
+    - duration: 60
+      arrivalRate: 500 # A devastating DDoS-level load for 0.5 CPU!
+scenarios:
+  - name: "Crashing the Node API"
+    flow:
+      - get:
+          url: "/api/venues"

@@ -1,0 +1,669 @@
+{
+  "aggregate": {
+    "counters": {
+      "vusers.created_by_name.Redis Cache Test - Venue Catalog": 3000,
+      "vusers.created": 3000,
+      "http.requests": 3000,
+      "http.codes.401": 2193,
+      "http.responses": 2193,
+      "http.downloaded_bytes": 85527,
+      "plugins.metrics-by-endpoint./api/venues.codes.401": 2193,
+      "vusers.failed": 807,
+      "vusers.completed": 2193,
+      "plugins.metrics-by-endpoint./api/venues.errors.ERR_SOCKET_TIMEOUT": 807,
+      "errors.ERR_SOCKET_TIMEOUT": 807
+    },
+    "rates": {
+      "http.request_rate": 100
+    },
+    "firstCounterAt": 1782394103069,
+    "firstHistogramAt": 1782394104491,
+    "lastCounterAt": 1782394138984,
+    "lastHistogramAt": 1782394138984,
+    "firstMetricAt": 1782394103069,
+    "lastMetricAt": 1782394138984,
+    "period": 1782394130000,
+    "summaries": {
+      "http.response_time": {
+        "min": 2,
+        "max": 8007,
+        "count": 2193,
+        "mean": 2299.4,
+        "p50": 450.4,
+        "median": 450.4,
+        "p75": 5944.6,
+        "p90": 7260.8,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 8024.5
+      },
+      "http.response_time.4xx": {
+        "min": 2,
+        "max": 8007,
+        "count": 2193,
+        "mean": 2299.4,
+        "p50": 450.4,
+        "median": 450.4,
+        "p75": 5944.6,
+        "p90": 7260.8,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 8024.5
+      },
+      "plugins.metrics-by-endpoint.response_time./api/venues": {
+        "min": 2,
+        "max": 8007,
+        "count": 2193,
+        "mean": 2299.4,
+        "p50": 450.4,
+        "median": 450.4,
+        "p75": 5944.6,
+        "p90": 7260.8,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 8024.5
+      },
+      "vusers.session_length": {
+        "min": 3.6,
+        "max": 8016.6,
+        "count": 2193,
+        "mean": 2304.7,
+        "p50": 450.4,
+        "median": 450.4,
+        "p75": 5944.6,
+        "p90": 7260.8,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 8024.5
+      }
+    },
+    "histograms": {
+      "http.response_time": {
+        "min": 2,
+        "max": 8007,
+        "count": 2193,
+        "mean": 2299.4,
+        "p50": 450.4,
+        "median": 450.4,
+        "p75": 5944.6,
+        "p90": 7260.8,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 8024.5
+      },
+      "http.response_time.4xx": {
+        "min": 2,
+        "max": 8007,
+        "count": 2193,
+        "mean": 2299.4,
+        "p50": 450.4,
+        "median": 450.4,
+        "p75": 5944.6,
+        "p90": 7260.8,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 8024.5
+      },
+      "plugins.metrics-by-endpoint.response_time./api/venues": {
+        "min": 2,
+        "max": 8007,
+        "count": 2193,
+        "mean": 2299.4,
+        "p50": 450.4,
+        "median": 450.4,
+        "p75": 5944.6,
+        "p90": 7260.8,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 8024.5
+      },
+      "vusers.session_length": {
+        "min": 3.6,
+        "max": 8016.6,
+        "count": 2193,
+        "mean": 2304.7,
+        "p50": 450.4,
+        "median": 450.4,
+        "p75": 5944.6,
+        "p90": 7260.8,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 8024.5
+      }
+    }
+  },
+  "intermediate": [
+    {
+      "counters": {
+        "vusers.created_by_name.Redis Cache Test - Venue Catalog": 667,
+        "vusers.created": 667,
+        "http.requests": 667,
+        "http.codes.401": 600,
+        "http.responses": 600,
+        "http.downloaded_bytes": 23400,
+        "plugins.metrics-by-endpoint./api/venues.codes.401": 600,
+        "vusers.failed": 0,
+        "vusers.completed": 600
+      },
+      "rates": {
+        "http.request_rate": 100
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1782394103069,
+      "firstHistogramAt": 1782394104491,
+      "lastCounterAt": 1782394109999,
+      "lastHistogramAt": 1782394109999,
+      "firstMetricAt": 1782394103069,
+      "lastMetricAt": 1782394109999,
+      "period": "1782394100000",
+      "summaries": {
+        "http.response_time": {
+          "min": 4,
+          "max": 1720,
+          "count": 600,
+          "mean": 492.2,
+          "p50": 399.5,
+          "median": 399.5,
+          "p75": 727.9,
+          "p90": 1176.4,
+          "p95": 1300.1,
+          "p99": 1525.7,
+          "p999": 1620
+        },
+        "http.response_time.4xx": {
+          "min": 4,
+          "max": 1720,
+          "count": 600,
+          "mean": 492.2,
+          "p50": 399.5,
+          "median": 399.5,
+          "p75": 727.9,
+          "p90": 1176.4,
+          "p95": 1300.1,
+          "p99": 1525.7,
+          "p999": 1620
+        },
+        "plugins.metrics-by-endpoint.response_time./api/venues": {
+          "min": 4,
+          "max": 1720,
+          "count": 600,
+          "mean": 492.2,
+          "p50": 399.5,
+          "median": 399.5,
+          "p75": 727.9,
+          "p90": 1176.4,
+          "p95": 1300.1,
+          "p99": 1525.7,
+          "p999": 1620
+        },
+        "vusers.session_length": {
+          "min": 6,
+          "max": 1722.8,
+          "count": 600,
+          "mean": 496.2,
+          "p50": 407.5,
+          "median": 407.5,
+          "p75": 742.6,
+          "p90": 1176.4,
+          "p95": 1326.4,
+          "p99": 1556.5,
+          "p999": 1620
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 4,
+          "max": 1720,
+          "count": 600,
+          "mean": 492.2,
+          "p50": 399.5,
+          "median": 399.5,
+          "p75": 727.9,
+          "p90": 1176.4,
+          "p95": 1300.1,
+          "p99": 1525.7,
+          "p999": 1620
+        },
+        "http.response_time.4xx": {
+          "min": 4,
+          "max": 1720,
+          "count": 600,
+          "mean": 492.2,
+          "p50": 399.5,
+          "median": 399.5,
+          "p75": 727.9,
+          "p90": 1176.4,
+          "p95": 1300.1,
+          "p99": 1525.7,
+          "p999": 1620
+        },
+        "plugins.metrics-by-endpoint.response_time./api/venues": {
+          "min": 4,
+          "max": 1720,
+          "count": 600,
+          "mean": 492.2,
+          "p50": 399.5,
+          "median": 399.5,
+          "p75": 727.9,
+          "p90": 1176.4,
+          "p95": 1300.1,
+          "p99": 1525.7,
+          "p999": 1620
+        },
+        "vusers.session_length": {
+          "min": 6,
+          "max": 1722.8,
+          "count": 600,
+          "mean": 496.2,
+          "p50": 407.5,
+          "median": 407.5,
+          "p75": 742.6,
+          "p90": 1176.4,
+          "p95": 1326.4,
+          "p99": 1556.5,
+          "p999": 1620
+        }
+      }
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Redis Cache Test - Venue Catalog": 1000,
+        "vusers.created": 1000,
+        "http.requests": 1000,
+        "http.codes.401": 916,
+        "http.responses": 916,
+        "http.downloaded_bytes": 35724,
+        "plugins.metrics-by-endpoint./api/venues.codes.401": 916,
+        "vusers.failed": 0,
+        "vusers.completed": 916
+      },
+      "rates": {
+        "http.request_rate": 100
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1782394110000,
+      "firstHistogramAt": 1782394110000,
+      "lastCounterAt": 1782394119993,
+      "lastHistogramAt": 1782394118982,
+      "firstMetricAt": 1782394110000,
+      "lastMetricAt": 1782394119993,
+      "period": "1782394110000",
+      "summaries": {
+        "http.response_time": {
+          "min": 2,
+          "max": 780,
+          "count": 916,
+          "mean": 188,
+          "p50": 83.9,
+          "median": 83.9,
+          "p75": 333.7,
+          "p90": 539.2,
+          "p95": 658.6,
+          "p99": 727.9,
+          "p999": 772.9
+        },
+        "http.response_time.4xx": {
+          "min": 2,
+          "max": 780,
+          "count": 916,
+          "mean": 188,
+          "p50": 83.9,
+          "median": 83.9,
+          "p75": 333.7,
+          "p90": 539.2,
+          "p95": 658.6,
+          "p99": 727.9,
+          "p999": 772.9
+        },
+        "plugins.metrics-by-endpoint.response_time./api/venues": {
+          "min": 2,
+          "max": 780,
+          "count": 916,
+          "mean": 188,
+          "p50": 83.9,
+          "median": 83.9,
+          "p75": 333.7,
+          "p90": 539.2,
+          "p95": 658.6,
+          "p99": 727.9,
+          "p999": 772.9
+        },
+        "vusers.session_length": {
+          "min": 3.6,
+          "max": 784.5,
+          "count": 916,
+          "mean": 192.3,
+          "p50": 89.1,
+          "median": 89.1,
+          "p75": 340.4,
+          "p90": 550.1,
+          "p95": 658.6,
+          "p99": 742.6,
+          "p999": 788.5
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 2,
+          "max": 780,
+          "count": 916,
+          "mean": 188,
+          "p50": 83.9,
+          "median": 83.9,
+          "p75": 333.7,
+          "p90": 539.2,
+          "p95": 658.6,
+          "p99": 727.9,
+          "p999": 772.9
+        },
+        "http.response_time.4xx": {
+          "min": 2,
+          "max": 780,
+          "count": 916,
+          "mean": 188,
+          "p50": 83.9,
+          "median": 83.9,
+          "p75": 333.7,
+          "p90": 539.2,
+          "p95": 658.6,
+          "p99": 727.9,
+          "p999": 772.9
+        },
+        "plugins.metrics-by-endpoint.response_time./api/venues": {
+          "min": 2,
+          "max": 780,
+          "count": 916,
+          "mean": 188,
+          "p50": 83.9,
+          "median": 83.9,
+          "p75": 333.7,
+          "p90": 539.2,
+          "p95": 658.6,
+          "p99": 727.9,
+          "p999": 772.9
+        },
+        "vusers.session_length": {
+          "min": 3.6,
+          "max": 784.5,
+          "count": 916,
+          "mean": 192.3,
+          "p50": 89.1,
+          "median": 89.1,
+          "p75": 340.4,
+          "p90": 550.1,
+          "p95": 658.6,
+          "p99": 742.6,
+          "p999": 788.5
+        }
+      }
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Redis Cache Test - Venue Catalog": 1000,
+        "vusers.created": 1000,
+        "http.requests": 1000,
+        "plugins.metrics-by-endpoint./api/venues.errors.ERR_SOCKET_TIMEOUT": 349,
+        "errors.ERR_SOCKET_TIMEOUT": 349,
+        "vusers.failed": 349,
+        "http.codes.401": 2,
+        "http.responses": 2,
+        "http.downloaded_bytes": 78,
+        "plugins.metrics-by-endpoint./api/venues.codes.401": 2,
+        "vusers.completed": 2
+      },
+      "rates": {
+        "http.request_rate": 100
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1782394120004,
+      "firstHistogramAt": 1782394126790,
+      "lastCounterAt": 1782394129995,
+      "lastHistogramAt": 1782394126793,
+      "firstMetricAt": 1782394120004,
+      "lastMetricAt": 1782394129995,
+      "period": "1782394120000",
+      "summaries": {
+        "http.response_time": {
+          "min": 7977,
+          "max": 8002,
+          "count": 2,
+          "mean": 7989.5,
+          "p50": 8024.5,
+          "median": 8024.5,
+          "p75": 8024.5,
+          "p90": 8024.5,
+          "p95": 8024.5,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "http.response_time.4xx": {
+          "min": 7977,
+          "max": 8002,
+          "count": 2,
+          "mean": 7989.5,
+          "p50": 8024.5,
+          "median": 8024.5,
+          "p75": 8024.5,
+          "p90": 8024.5,
+          "p95": 8024.5,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "plugins.metrics-by-endpoint.response_time./api/venues": {
+          "min": 7977,
+          "max": 8002,
+          "count": 2,
+          "mean": 7989.5,
+          "p50": 8024.5,
+          "median": 8024.5,
+          "p75": 8024.5,
+          "p90": 8024.5,
+          "p95": 8024.5,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "vusers.session_length": {
+          "min": 7984.4,
+          "max": 8011.7,
+          "count": 2,
+          "mean": 7998,
+          "p50": 8024.5,
+          "median": 8024.5,
+          "p75": 8024.5,
+          "p90": 8024.5,
+          "p95": 8024.5,
+          "p99": 8024.5,
+          "p999": 8024.5
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 7977,
+          "max": 8002,
+          "count": 2,
+          "mean": 7989.5,
+          "p50": 8024.5,
+          "median": 8024.5,
+          "p75": 8024.5,
+          "p90": 8024.5,
+          "p95": 8024.5,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "http.response_time.4xx": {
+          "min": 7977,
+          "max": 8002,
+          "count": 2,
+          "mean": 7989.5,
+          "p50": 8024.5,
+          "median": 8024.5,
+          "p75": 8024.5,
+          "p90": 8024.5,
+          "p95": 8024.5,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "plugins.metrics-by-endpoint.response_time./api/venues": {
+          "min": 7977,
+          "max": 8002,
+          "count": 2,
+          "mean": 7989.5,
+          "p50": 8024.5,
+          "median": 8024.5,
+          "p75": 8024.5,
+          "p90": 8024.5,
+          "p95": 8024.5,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "vusers.session_length": {
+          "min": 7984.4,
+          "max": 8011.7,
+          "count": 2,
+          "mean": 7998,
+          "p50": 8024.5,
+          "median": 8024.5,
+          "p75": 8024.5,
+          "p90": 8024.5,
+          "p95": 8024.5,
+          "p99": 8024.5,
+          "p999": 8024.5
+        }
+      }
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Redis Cache Test - Venue Catalog": 333,
+        "vusers.created": 333,
+        "http.requests": 333,
+        "plugins.metrics-by-endpoint./api/venues.errors.ERR_SOCKET_TIMEOUT": 458,
+        "errors.ERR_SOCKET_TIMEOUT": 458,
+        "vusers.failed": 458,
+        "http.codes.401": 675,
+        "http.responses": 675,
+        "http.downloaded_bytes": 26325,
+        "plugins.metrics-by-endpoint./api/venues.codes.401": 675,
+        "vusers.completed": 675
+      },
+      "rates": {
+        "http.request_rate": 100
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1782394130004,
+      "firstHistogramAt": 1782394133804,
+      "lastCounterAt": 1782394138984,
+      "lastHistogramAt": 1782394138984,
+      "firstMetricAt": 1782394130004,
+      "lastMetricAt": 1782394138984,
+      "period": "1782394130000",
+      "summaries": {
+        "http.response_time": {
+          "min": 5380,
+          "max": 8007,
+          "count": 675,
+          "mean": 6754.2,
+          "p50": 6702.6,
+          "median": 6702.6,
+          "p75": 7407.5,
+          "p90": 7709.8,
+          "p95": 7865.6,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "http.response_time.4xx": {
+          "min": 5380,
+          "max": 8007,
+          "count": 675,
+          "mean": 6754.2,
+          "p50": 6702.6,
+          "median": 6702.6,
+          "p75": 7407.5,
+          "p90": 7709.8,
+          "p95": 7865.6,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "plugins.metrics-by-endpoint.response_time./api/venues": {
+          "min": 5380,
+          "max": 8007,
+          "count": 675,
+          "mean": 6754.2,
+          "p50": 6702.6,
+          "median": 6702.6,
+          "p75": 7407.5,
+          "p90": 7709.8,
+          "p95": 7865.6,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "vusers.session_length": {
+          "min": 5383.5,
+          "max": 8016.6,
+          "count": 675,
+          "mean": 6762.2,
+          "p50": 6702.6,
+          "median": 6702.6,
+          "p75": 7407.5,
+          "p90": 7709.8,
+          "p95": 7865.6,
+          "p99": 8024.5,
+          "p999": 8024.5
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 5380,
+          "max": 8007,
+          "count": 675,
+          "mean": 6754.2,
+          "p50": 6702.6,
+          "median": 6702.6,
+          "p75": 7407.5,
+          "p90": 7709.8,
+          "p95": 7865.6,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "http.response_time.4xx": {
+          "min": 5380,
+          "max": 8007,
+          "count": 675,
+          "mean": 6754.2,
+          "p50": 6702.6,
+          "median": 6702.6,
+          "p75": 7407.5,
+          "p90": 7709.8,
+          "p95": 7865.6,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "plugins.metrics-by-endpoint.response_time./api/venues": {
+          "min": 5380,
+          "max": 8007,
+          "count": 675,
+          "mean": 6754.2,
+          "p50": 6702.6,
+          "median": 6702.6,
+          "p75": 7407.5,
+          "p90": 7709.8,
+          "p95": 7865.6,
+          "p99": 8024.5,
+          "p999": 8024.5
+        },
+        "vusers.session_length": {
+          "min": 5383.5,
+          "max": 8016.6,
+          "count": 675,
+          "mean": 6762.2,
+          "p50": 6702.6,
+          "median": 6702.6,
+          "p75": 7407.5,
+          "p90": 7709.8,
+          "p95": 7865.6,
+          "p99": 8024.5,
+          "p999": 8024.5
+        }
+      }
+    }
+  ]
+}
