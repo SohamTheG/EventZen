@@ -22,8 +22,6 @@ To overcome the scaling limitations of a traditional monolith, EventZen utilizes
 ### The Database-per-Service Pattern
 To guarantee fault isolation, databases are physically separated. Cross-service data is stitched together on the client-side (React SPA) via "Logical Foreign Keys", completely eliminating the traditional database locking and massive `JOIN` bottlenecks.
 
-![Database Schema](assets/images/image_p28_1.png)
-
 ### API Gateway & Edge Routing
 A Spring Cloud API Gateway acts as the single edge ingress point. It masks the internal container network, handles centralized CORS policies, and validates JWT signatures before routing traffic to the internal Java or Node.js containers.
 
